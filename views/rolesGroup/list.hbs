@@ -1,0 +1,113 @@
+<h4>Quản lý nhóm quyền</h4>
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <div class="row">
+            <input type="hidden" name="csrf" value="{{token}}">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <select name="userType" id="userType" class="form-control form-control-sm">
+                        {{#each listUserType}}
+                        <option value="{{this._id}}" roles='{{this.Roles}}'>{{this.TypeName}}</option>
+                        {{/each}}
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <input type="submit" class="form-control form-control-sm btn btn-success btn-sm"
+                        onclick="submitForm();" value="Lưu lại">
+                </div>
+            </div>
+        </div>
+        {{#if message}}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-success col-md-12">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    {{message}}
+                </div>
+            </div>
+        </div>
+        {{/if}}
+    </div>
+</div>
+<form action="/role-group/store" method="POST" id="formRole">
+    <input type="hidden" name="csrf" value="{{ token }}">
+    <input type="hidden" name="userTypeId" id="userTypeId" value="{{ token }}">
+    <div class="grid">
+        {{#each listRole}}
+        <div class="grid-item shadow mr-3 rounded boxRoleGroup" style="width: 300px;">
+            <table class="table table-sm table-hover tableRole">
+                <thead class="bg-dark">
+                    <tr>
+                        <th>
+                            <input type="checkbox" class="checkAll">
+                        </th>
+                        <th class="text-center text-white" title="{{this.roleGroup}}">
+                            {{this.roleGroup}}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each this.roles}}
+                    <tr style="cursor: pointer;">
+                        <td>
+                            <input type="checkbox" name="roles" id="{{this.roleCode}}" value="{{this.roleCode}}">
+                        </td>
+                        <td title="{{this.roleCode}}">
+                            <label for="{{this.roleCode}}" class="mb-0 w-100">
+                                {{this.roleName}}
+                            </label>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+        {{/each}}
+    </div>
+</form>
+
+<script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+<script>
+    const url = window.location.href;
+    if(url.split('#')[1]){
+        $('#userType').val(url.split('#')[1])
+    }
+    $('.grid').masonry({});
+    $('#userType').on('change', function () {
+        $('#userTypeId').val($(this).val());
+        handleAllCheckBox();
+    })
+    $(document).ready(function () {
+        handleAllCheckBox();
+        
+    })
+    function submitForm() {
+        $('form#formRole').submit();
+    }
+    function handleAllCheckBox() {
+        const stringRole = $('#userType').find('option:selected').attr('roles');
+        $('#userTypeId').val($('#userType').val());
+        $('.boxRoleGroup').each(function () {
+            const box = $(this);
+            const listCheckBox = box.find('input[type=checkbox]');
+            listCheckBox.each(function () {
+                const checkBox = $(this);
+                const arrRole = stringRole.split(",");
+                checkBox.prop('checked', arrRole.includes(checkBox.val()))
+                const checkBoxRole = listCheckBox.filter('[name="roles"]');
+                var countChecked = checkBoxRole.filter(':checked').length;//ĐẾM SỐ Ô ĐÃ TÍCH
+                var countUnChecked = checkBoxRole.length - countChecked;// ĐẾM SỐ Ô CHƯA TÍCH
+                listCheckBox.filter('[class="checkAll"]').prop('checked', countUnChecked != 0 ? false : true);//TẤT CẢ ĐỀU TÍCH THÌ TÍCH VÀO Ô CHỌN CẤT CẢ
+                checkBox.on('click', function () {
+                    const clicked = $(this);
+                    if (clicked.attr('class') == 'checkAll') listCheckBox.prop('checked', $(this).is(':checked'));
+                    var countChecked = checkBoxRole.filter(':checked').length;//ĐẾM SỐ Ô ĐÃ TÍCH
+                    var countUnChecked = checkBoxRole.length - countChecked;// ĐẾM SỐ Ô CHƯA TÍCH
+                    listCheckBox.filter('[class="checkAll"]').prop('checked', countUnChecked != 0 ? false : true);//TẤT CẢ ĐỀU TÍCH THÌ TÍCH VÀO Ô CHỌN CẤT CẢ
+                })
+            })
+        })
+    }
+</script>

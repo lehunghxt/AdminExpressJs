@@ -1,0 +1,147 @@
+<h4>Quản lý quyền</h4>
+<div class="card shadow mb-4">
+  <div class="card-body">
+      <form action="/role" method="POST">
+    <div class="row">
+      <input type="hidden" name="csrf" value="{{token}}">
+        <div class="col-md-4">
+          <div class="form-group">
+            <input type="text" class="form-control form-control-sm" placeholder="Nhóm quyền" id="roleGroup" name="roleGroup">
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <input type="text" class="form-control form-control-sm" placeholder="Tên quyền" id="roleName" name="roleName" autocomplete="off">
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <input type="submit" class="form-control form-control-sm btn btn-success" value="Lưu lại">
+          </div>
+        </div>
+    </div>
+      </form> 
+    {{#if message}}
+    <div class="row">
+      <div class="col-md-12">
+        <div class="alert alert-success col-md-12">
+          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+          {{message}}
+        </div>
+      </div>
+    </div>
+    {{/if}}
+  </div>
+</div>
+<div class="grid">
+  {{#each listRole}}
+    <div class="grid-item shadow mr-3 rounded boxRoleGroup" style="width: 300px;">
+      <table class="table table-sm table-hover">
+        <thead class="bg-dark">
+          <tr>
+            <th class="text-center text-white" colspan="2" title="{{this.roleGroup}}">
+              {{this.roleGroup}}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each this.roles}}
+          <tr>
+            <td  title="{{this.roleCode}}">{{this.roleName}}</td>
+            <td>
+              <a href="#" 
+                 class="text-success text-decoration-none" 
+                 roleGroup="{{this.roleGroup}}" 
+                 roleName="{{this.roleName}}"
+                 roleId="{{this._id}}"
+                 onclick="handleEdit(this);">sửa</a>
+              <a href="#" 
+                 class="text-danger text-decoration-none"
+                 roleId="{{this._id}}"
+                 onclick="handleDelete(this);"
+                 >xóa</a>
+            </td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  {{/each}}
+</div>
+<!-- Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Xác nhận xóa quyền</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Bạn có chắc muốn xóa quyền này ?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+        <form action="/role/delete" method="POST">
+          <input type="hidden" name="csrf" value="{{ token }}">
+          <input type="hidden" name="roleIdDel" id="roleIdDel" value="">
+          <button type="submit" class="btn btn-success">Xóa</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-success" id="editModalTitle"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form action="/role/edit" method="POST">
+        <div class="modal-body">
+          <div class="form-group">
+            <input type="hidden" name="csrf" value="{{ token }}">
+            <input type="hidden" name="roleId" id="roleId" value="">
+            <input type="text" class="form-control" name="editName" id="editName" value="">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Đóng</button>
+          <button type="submit" class="btn btn-success btn-sm">Cập nhập</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+<script>
+  $('.grid').masonry({});
+  function handleEdit(e){
+    const roleGroup = $(e).attr('roleGroup');
+    const roleName = $(e).attr('roleName');
+    const roleId = $(e).attr('roleId');
+    console.log(roleId);
+    $('#editModalTitle').text(roleGroup);
+    $('#editName').val(roleName);
+    $('#roleId').val(roleId);
+    $('#editModal').modal('toggle')
+  }
+  $('#editModal').on('hidden.bs.modal', function () {
+    $('#editModalTitle').text('');
+    $('#editName').val('');
+    $('#roleId').val('');
+  });
+  function handleDelete(e){
+    const roleId = $(e).attr('roleId');
+    $('#roleIdDel').val(roleId);
+    $('#deleteModal').modal('toggle');
+  }
+  $('#deleteModal').on('hidden.bs.modal', function () {
+    $('#roleIdDel').val('');
+  });
+</script>

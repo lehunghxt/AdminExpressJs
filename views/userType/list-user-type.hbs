@@ -1,0 +1,199 @@
+<h4>Danh sách loại tài khoản</h4>
+<div class="card shadow mb-4">
+  <div class="card-body">
+    <div class="row">
+      <div class="col-sm-12" style="padding-bottom: 10px;">
+        {{#if UserCan.Themloaitaikhoan }}
+            <a href="#" class="btn btn-success btn-sm" onclick="handleAction();">Thêm</a>
+        {{/if}}
+        {{#if UserCan.Xoaloaitaikhoan }}
+            <button class="btn btn-danger btn-sm" id="delMulti" style="display: none;" onclick="handleDeleteMul();">Xóa</button>
+        {{/if}}
+      </div>
+    </div>
+    {{#if message}}
+    <div class="row">
+      <div class="col-md-12">
+        <div class="alert alert-success col-md-12">
+          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+          {{message}}
+        </div>
+      </div>
+    </div>
+    {{/if}}
+    <div class="row">
+      <div class="col-sm-12 overflow-auto">
+        <table class="table table-bordered table-sm table-striped" style="font-size: 13px; min-width:300px;">
+          <thead>
+            <tr role="row" style="text-align: center;">
+              <th style="width: 35px;">
+                <input type="checkbox" id="selectAll">
+              </th>
+              <th style="width: 30px;">STT</th>
+              <th>Loại tài khoản</th>
+              <th>Mã</th>
+              <th class="text-center">Chọn</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#if existData}}
+              <form action="/user-type/delete-mul" method="POST" id="deleteAll">
+                <input type="hidden" name="csrf" value="{{ token }}">
+                {{#each listUserType}}
+                <tr>
+                  <td class="text-center">
+                    <input type="checkbox" id='idUserType' name="idUserType" value="{{ this._id }}">
+                  </td>
+                  <td class="text-center">
+                    {{sequenNumber '1' @index }}</td>
+                  <td class="text-center">{{this.TypeName}}</td>
+                  <td class="text-center">{{this.TypeCode}}</td>
+                  <td class="action text-center">
+                    {{#if ../UserCan.Sualoaitaikhoan }}
+                        <a href="#" typeid="{{ this._id }}" typename="{{this.TypeName}}" typecode="{{this.TypeCode}}" onclick="handleAction(this);">Sửa</a> /
+                    {{/if}}
+                    {{#if ../UserCan.Xoaloaitaikhoan }}
+                        <a href="#" class="text-danger text-decoration-none" onclick="handleDelete('{{this._id}}')">Xóa</a>
+                    {{/if}}
+                  </td>
+                </tr>
+                {{/each}}
+              </form>
+            {{else}}
+            <tr>
+              <td colspan="5">Chưa có loại tài khoản {{#if UserCan.Themloaitaikhoan }} <a href="/user-type/add">thêm loại tài khoản</a>{{/if}}</td>
+            </tr>
+            {{/if}}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal For One User -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Xóa loại tài khoản</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Xác nhận xóa loại tài khoản ?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+        <form action="/user-type/delete" method="POST">
+          <input type="hidden" name="csrf" value="{{ token }}">
+          <input type="hidden" name="userTypeId" id="userTypeId">
+          <button type="submit" class="btn btn-danger">Xóa</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal For Mul User -->
+<div class="modal fade" id="myModalMulUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Xóa loại tài khoản</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Xác nhận xóa các loại tài khoản đã chọn ?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+        <button type="button" class="btn btn-danger" onclick="submitForm();">Xóa</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal add and edit -->
+<div class="modal fade" id="addAndEdit" tabindex="-1" role="dialog" aria-labelledby="addAndEditTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addAndEditTitle"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form action="" method="POST" id="formAddEdit">
+        <input type="hidden" name="csrf" value="{{ token }}">
+        <input type="hidden" id="TypeId" name="TypeId" value="">
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <input type="text" class="form-control" id="TypeName" name="TypeName" required>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <input type="text" class="form-control" id="TypeCode" name="TypeCode" required>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+          <button type="submit" class="btn btn-primary">Lưu</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  function handleDelete(id) {
+    $('#userTypeId').val(id);
+    $('#myModal').modal('toggle');
+  }
+  $('#myModal').on('hidden.bs.modal', function () {
+    $('#userTypeId').val('');
+  })
+  const checkbox = $('input[type=checkbox]');
+  checkbox.each(function(item, index){
+    $(index).on('click', ()=> {
+      if($(this).attr('id') == 'selectAll') checkbox.prop('checked', $(this).is(':checked'));
+      const countChecked = checkbox.filter('[id="idUserType"]').filter(':checked').length;
+      const countUnChecked = checkbox.filter('[id="idUserType"]').length - countChecked;
+      checkbox.filter('[id="selectAll"]').prop('checked', countUnChecked != 0 ? false: true);
+      $('#delMulti').css('display',countChecked > 0 ? 'inline-block' : 'none');
+    })
+  })
+  function handleDeleteMul() {
+    $('#myModalMulUser').modal('toggle');
+  }
+  function submitForm(){
+    $('form#deleteAll').submit();
+  }
+  function handleAction(data = null){
+    const title = (data == null) ? 'Thêm loại tài khoản' : 'Sửa loại tài khoản';
+    const action = (data == null) ? '/user-type/add' : '/user-type/edit';
+    $('#addAndEditTitle').text(title);
+    $('#formAddEdit').attr('action', action);
+    if(data){
+      const TypeId = $(data).attr('typeid');
+      const TypeName = $(data).attr('typename');
+      const TypeCode = $(data).attr('typecode');
+      $('#TypeId').val(TypeId);
+      $('#TypeName').val(TypeName);
+      $('#TypeCode').val(TypeCode);
+    }
+    $('#addAndEdit').modal('toggle');
+  }
+  $('#addAndEdit').on('hidden.bs.modal', function () {
+    $('#TypeId').val('');
+      $('#TypeName').val('');
+      $('#TypeCode').val('');
+  })
+</script>

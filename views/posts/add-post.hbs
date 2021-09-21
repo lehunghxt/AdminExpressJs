@@ -1,0 +1,36 @@
+<script src="../../../asset/ckeditor/ckeditor.js"></script>
+<h4>Thêm bài viết</h4>
+<div style="display: flex;justify-content: center;align-items: center;">
+    <div class="card shadow mb-4 col-md-6">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-12">
+                    <form action="/post/add" method="POST">
+                        <div class="form-group">
+                            <input type="hidden" name="csrf" value="{{token}}">
+                            {{#if UserCan.Thembaiviet}}
+                            <input type="submit" value="Lưu" class="btn btn-success btn-sm">
+                            {{/if}}
+                            <a href="/post" class="btn btn-danger btn-sm">Quay lại</a>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control form-control-sm" id="title" name="title"
+                                placeholder="Tiêu đề bài viết">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="description" name="description"
+                                placeholder="Mô tả bài viết">
+                        </div>
+                        <div class="form-group">
+                            <label class="text-success" for="contentPost">Nội dung bài viết</label>
+                            <textarea id="contentPost" name="contentPost"></textarea>
+                            <script>
+                                CKEDITOR.replace('contentPost');
+                            </script>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

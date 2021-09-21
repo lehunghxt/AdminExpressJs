@@ -1,0 +1,167 @@
+<style>
+    .stick{
+        position: sticky;
+        left: -15px;
+        backdrop-filter: blur(1000000px);
+    }
+</style>
+<h4>Danh sách thành viên</h4>
+<div class="card shadow mb-4">
+	<div class="card-body">
+		<div class="row">
+			<div class="col-sm-12" style="padding-bottom: 10px;">
+                {{#if UserCan.Themthanhvien }}
+				    <a href="/user/add" class="btn btn-success btn-sm">Thêm</a>
+                {{/if}}
+                {{#if UserCan.Xoathanhvien }}
+				    <button class="btn btn-danger btn-sm" id="delUser" style="display: none;" onclick="handleDeleteMul();">Xóa</button>
+                {{/if}}
+			</div>
+		</div>
+		{{#if message}}
+		<div class="row">
+			<div class="col-md-12">
+				<div class="alert alert-success col-md-12">
+					<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+					{{message}}
+				</div>
+			</div>
+		</div>
+		{{/if}}
+		<div class="row">
+			<div class="col-sm-12 overflow-auto">
+				<table class="table table-bordered table-sm table-hover" style="font-size: 13px; min-width: 800px;">
+					<thead>
+						<tr role="row" style="text-align: center;">
+							<th style="width: 35px;">
+								<input type="checkbox" id="selectAll">
+							</th>
+							<th style="width: 30px;">STT</th>
+							<th class="stick">Tên</th>
+							<th>Email</th>
+							<th>Địa chỉ</th>
+							<th class="text-center">Số điện thoại</th>
+							<th>Giới tính</th>
+							<th class="text-center">Loại tài khoản</th>
+							<th class="text-center">Số bài viết</th>
+							<th class="text-center" style="width: 65px;">Chọn</th>
+						</tr>
+					</thead>
+					<tbody>
+						{{#if existData}}
+						<form action="/user/deleteMul" method="POST" id="deleteMul">
+							<input type="hidden" name="csrf" value="{{ token }}">
+							{{#each listuser}}
+							<tr>
+								<td class="text-center">
+									<input type="checkbox" id='userId' name="userId" value="{{ this._id }}">
+								</td>
+								<td class="text-center">
+									{{sequenNumber ../currentPage @index }}</td>
+								<td class="stick">{{this.name}}</td>
+								<td>{{this.email}}</td>
+								<td>{{this.address}}</td>
+								<td class="text-center">{{this.phone}}</td>
+								<td class="text-center">{{ handleGender this.gender}}</td>
+								<td class="text-center">{{ this.userType.TypeName}}</td>
+								<td class="text-center">{{ this.posts.length }}</td>
+								<td class="action text-center">
+                                    {{#if ../UserCan.Suathanhvien }}
+									    <a class="text-decoration-none" href="/user/edit/{{this._id}}">sửa</a> /
+                                    {{/if}}
+                                    {{#if ../UserCan.Xoathanhvien }}
+									    <a href="#" class="text-danger text-decoration-none" onclick="handleDelete('{{this._id}}')">xóa</a>
+                                    {{/if}}
+								</td>
+							</tr>
+							{{/each}}
+						</form>
+						{{else}}
+						<tr>
+                            {{#if UserCan.Themthanhvien }}
+							    <td colspan="9">Chưa có thành viên <a href="/user/add">thêm thành viên</a></td>
+                            {{/if}}
+						</tr>
+						{{/if}}
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div style="font-size: 13px;">
+			{{{ pagination 'user' pages currentPage }}}
+		</div>
+	</div>
+</div>
+<!-- Modal For One User -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">Xóa thành viên</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				Xác nhận xóa thành viên ?
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<form action="user/delete" method="POST">
+					<input type="hidden" name="csrf" value="{{ token }}">
+					<input type="hidden" name="userid" id="userid">
+					<button type="submit" class="btn btn-danger">Xóa</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Modal For Mul User -->
+<div class="modal fade" id="myModalMulUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+	aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">Xóa thành viên</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				Xác nhận xóa các thành viên đã chọn ?
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-danger" onclick="submitForm();">Xóa</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	function handleDelete(id) {
+		$('#userid').val(id);
+		$('#myModal').modal('toggle');
+	}
+	$('#myModal').on('hidden.bs.modal', function () {
+		$('#userid').val('');
+	})
+	var checkbox = $('input[type=checkbox]');
+
+	checkbox.each(function (item, index) {
+		$(index).on('click', () => {
+			if ($(this).attr('id') == 'selectAll') checkbox.prop('checked', $(this).is(':checked'));
+			var countChecked = checkbox.filter('[id="userId"]').filter(':checked').length;
+			var countUnChecked = checkbox.filter('[id="userId"]').length - countChecked;
+			checkbox.filter('[id="selectAll"]').prop('checked', countUnChecked != 0 ? false : true);
+			$('#delUser').css('display', countChecked > 0 ? 'inline-block' : 'none');
+		})
+	})
+	function handleDeleteMul() {
+		$('#myModalMulUser').modal('toggle');
+	}
+	function submitForm() {
+		console.log('admin123');
+		$('form#deleteMul').submit();
+	}
+</script>
