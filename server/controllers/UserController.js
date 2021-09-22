@@ -2,7 +2,6 @@ const UserModel = require("../models/UserModel");
 const UserTypeModel = require("../models/UserTypeModel");
 
 exports.view = async (req, res) => {
-    console.log();
   const page = parseInt(req.query.page) || 1;
   var perPage = 20;
   const currentUserId = req.session.CurrentUser._id;

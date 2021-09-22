@@ -34,4 +34,8 @@ module.exports.compareString = (a, b, output) => {
 module.exports.handleGender = (gender) => {
   return gender == 'male' ? 'nam' : 'nữ';
 }
+module.exports.showTitle = (title) => {
+    return title ? title : 'Admin CURD';
+  }
+  
 

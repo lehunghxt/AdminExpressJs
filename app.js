@@ -38,6 +38,8 @@ hbs.handlebars.registerHelper("pagination", helper.pagination);
 hbs.handlebars.registerHelper("sequenNumber", helper.sequenNumber);
 hbs.handlebars.registerHelper("compareString", helper.compareString);
 hbs.handlebars.registerHelper("handleGender", helper.handleGender);
+hbs.handlebars.registerHelper("showTitle", helper.showTitle);
+
 
 app.use(async function (req, res, next) {
   if (req.session.csrf === undefined) {

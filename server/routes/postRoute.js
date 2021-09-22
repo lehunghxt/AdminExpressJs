@@ -11,5 +11,6 @@ postRoute.post('/edit/:id', checkCsrfToken, PostController.update);
 postRoute.post('/delete', checkCsrfToken, PostController.delete);
 postRoute.post('/delete-all', checkCsrfToken, PostController.deleteAll);
 postRoute.get('/', PostController.view)
+postRoute.get('/ajaxPost/:id', PostController.ajaxPost)
 
 module.exports = postRoute;

@@ -19,7 +19,6 @@ const addpost = async (data) => {
 };
 
 const listpost = async (page, perPage, CurrentUser) => {
-    console.log(CurrentUser._id);
   return new Promise((res, rej) => {
     Posts.find({author: CurrentUser._id})
       .populate('author')

@@ -4,6 +4,12 @@
  */
 
 CKEDITOR.editorConfig = function( config ) {
+    config.toolbarCanCollapse = true;
+
+    config.width = "auto";
+    config.height = "50vh";
+    config.toolbarGroupCycling = false;
+
 	// Define changes to default configuration here. For example:
 	// config.language = 'fr';
 	// config.uiColor = '#AADC6E';

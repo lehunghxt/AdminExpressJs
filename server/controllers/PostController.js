@@ -14,10 +14,13 @@ exports.view = async (req, res) => {
     existData: existData,
     message: message,
     token: req.session.csrf,
+    title : 'Quản lý bài viết'
   });
 };
 exports.add = (req, res) => {
-  res.render("posts/add-post");
+  res.render("posts/add-post",{
+    title : 'Thêm bài viết'
+  });
 };
 exports.store = async (req, res) => {
   const data = req.body;
@@ -30,7 +33,11 @@ exports.store = async (req, res) => {
 exports.edit = async (req, res) => {
   const { id } = req.params;
   const postdata = await PostModel.findOnePost(id);
-  res.render("posts/edit-post", { post: postdata, token: req.session.csrf });
+  res.render("posts/edit-post", { 
+      post: postdata, 
+      token: req.session.csrf,
+      title : 'Sửa bài viết'
+     });
 };
 
 exports.update = async (req, res) => {
@@ -46,8 +53,8 @@ exports.delete = async (req, res) => {
   const { delPostId } = req.body;
   const dataDelete = await PostModel.deletepost(delPostId);
   var message;
-  if (!dataDelete) message = `xóa bài viết không thành công !`;
-  else message = `đã xóa thành công bài viết: ${dataDelete.title} !`;
+  if (!dataDelete) message = `Xóa bài viết không thành công !`;
+  else message = `Đã xóa thành công bài viết: ${dataDelete.title} !`;
   req.flash("message", message);
   res.redirect("/post");
 };
@@ -57,8 +64,8 @@ exports.deleteAll = async (req, res) => {
   const count = await PostModel.deletemulpost(postid);
   var message;
   if (!count || count.deletedCount == 0)
-    message = `xóa bài viết không thành công !`;
-  else message = `đã xóa thành công ${count.deletedCount} bài viết !`;
+    message = `Xóa bài viết không thành công !`;
+  else message = `Đã xóa thành công ${count.deletedCount} bài viết !`;
   req.flash("message", message);
   res.redirect("/post");
 };
@@ -68,3 +75,9 @@ exports.gen = async (req, res) => {
   const datagen = await PostModel.gen(currentUser);
   res.redirect("/post");
 };
+
+exports.ajaxPost = async (req, res) => {
+    const { id } = req.params;
+    const post = await PostModel.findOnePost(id);
+    res.json({post : post}).status(200);
+  };

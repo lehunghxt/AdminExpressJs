@@ -1,3 +1,10 @@
+<style>
+    .stick{
+        position: sticky;
+        left: -15px;
+        backdrop-filter: blur(1000000px);
+    }
+</style>
 <h4>Danh sách bài viết</h4>
 <div class="card shadow mb-4">
     <div class="card-body">
@@ -22,15 +29,15 @@
         </div>
         {{/if}}
         <div class="row">
-            <div class="col-sm-12">
-                <table class="table table-bordered table-sm table-striped" style="font-size: 13px;">
+            <div class="col-sm-12 overflow-auto">
+                <table class="table table-bordered table-sm table-hover" style="font-size: 13px; min-width: 600px;">
                     <thead>
                         <tr role="row" style="text-align: center;">
                             <th style="width: 35px;">
                                 <input type="checkbox" id="selectAll">
                             </th>
                             <th style="width: 30px;">STT</th>
-                            <th>Tiêu đề</th>
+                            <th class="stick">Tiêu đề</th>
                             <th>Mô tả</th>
                             <th>Tác giả</th>
                             <th style="width: 35px;">Xem</th>
@@ -49,18 +56,18 @@
                                 <td class="text-center">
                                     {{sequenNumber ../currentPage @index }}
                                 </td>
-                                <td>{{this.title}}</td>
+                                <td class="stick">{{this.title}}</td>
                                 <td>{{this.description}}</td>
                                 <td class="text-center">{{ this.author.name }}</td>
-                                <td class="text-center text-dark">
-                                    <i class="fas fa-eye"></i>
+                                <td class="text-center">
+                                    <a href="#" class="text-info text-decoration-none" onclick="handleViewPost('{{this._id}}');"><i class="fas fa-eye"></i></a>
                                 </td>
                                 <td class="action text-center">
                                     {{#if ../UserCan.Suabaiviet}}
-                                        <a class="text-decoration-none" href="/post/edit/{{this._id}}">sửa</a>
+                                        <a class="text-decoration-none" href="/post/edit/{{this._id}}">Sửa</a>
                                     {{/if}}
                                     {{#if ../UserCan.Xoabaiviet}}
-                                        <a href="#" class="text-danger text-decoration-none" onclick="handleDelete('{{this._id}}')">xóa</a>
+                                        <a href="#" class="text-danger text-decoration-none" onclick="handleDelete('{{this._id}}')">Xóa</a>
                                     {{/if}}
                                 </td>
                             </tr>
@@ -125,6 +132,27 @@
         </div>
     </div>
 </div>
+<!-- Modal view post -->
+<div class="modal fade" id="viewPostModal" tabindex="-1" role="dialog" aria-labelledby="viewPostModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="position: sticky; top: 0; background: white; z-index: 100; border: 27px;">
+        <h5 class="modal-title text-success" id="postTitle"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="postDescription"></div>
+        <hr>
+        <div id="postContent"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+      </div>
+    </div>
+  </div>
+</div>
 <script>
     function handleDelete(id) {
         $('#delPostId').val(id);
@@ -148,7 +176,25 @@
         $('#myModalMulUser').modal('toggle');
     }
     function submitForm() {
-        console.log('admin123');
         $('form#deleteAllPost').submit();
     }
+    function handleViewPost(id){
+        const thisModal = $('#viewPostModal');
+        const url = `/post/ajaxPost/${id}`;
+        $.ajax({
+            url : url,
+            method : 'GET',
+        }).then((data) => {
+            const post = data.post;
+            $('#postTitle').text(post.title);
+            $('#postDescription').text(post.description);
+            $('#postContent').html(post.content);
+            thisModal.modal('toggle');
+        })
+    }
+    $('#viewPostModal').on('hidden.bs.modal', function () {
+        $('#postTitle').text('');
+        $('#postDescription').text('');
+        $('#postContent').html('');
+    })
 </script>

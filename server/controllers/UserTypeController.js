@@ -13,22 +13,22 @@ exports.view = async (req, res) => {
 exports.store = async (req, res) => {
   const data = req.body;
   const dataAdded = await UserTypeModel.add(data);
-  req.flash("message", `đã thêm loại tài khoản: ${dataAdded.typeName} !`);
+  req.flash("message", `Đã thêm loại tài khoản: ${dataAdded.typeName} !`);
   res.redirect("/user-type");
 };
 exports.update = async (req, res) => {
   const data = req.body;
   const { TypeId } = req.body;
   const dataUpdated = await UserTypeModel.update(data, TypeId);
-  req.flash("message", `đã cập nhập loại tài khoản: ${dataUpdated.TypeName} !`);
+  req.flash("message", `Đã cập nhập loại tài khoản: ${dataUpdated.TypeName} !`);
   res.redirect("/user-type");
 };
 exports.delete = async (req, res) => {
   const { userTypeId } = req.body;
   const dataDel = await UserTypeModel.delete(userTypeId);
   var message;
-  if (!dataDel) message = `xóa loại người dùng không thành công !`;
-  else message = `đã xóa thành công loại người dùng: ${dataDel.TypeName} !`;
+  if (!dataDel) message = `Xóa loại người dùng không thành công !`;
+  else message = `Đã xóa thành công loại người dùng: ${dataDel.TypeName} !`;
   req.flash("message", message);
   res.redirect("/user-type");
 };
@@ -37,8 +37,8 @@ exports.deleteMul = async (req, res) => {
   const count = await UserTypeModel.deleteMul(idUserType);
   var message;
   if (!count || count.deletedCount == 0)
-    message = `xóa thành viên không thành công !`;
-  else message = `đã xóa thành công ${count.deletedCount} loại tài khoản !`;
+    message = `Xóa thành viên không thành công !`;
+  else message = `Đã xóa thành công ${count.deletedCount} loại tài khoản !`;
   req.flash("message", message);
   res.redirect("/user-type");
 };

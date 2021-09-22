@@ -24,6 +24,6 @@ exports.login = async (req, res) => {
     token: req.session.csrf,
     username : username,
     password : password,
-    message : 'tài khoản hoặc mật khẩu không đúng'
+    message : 'Tên đăng hoặc mật khẩu không đúng !'
   });
 };
