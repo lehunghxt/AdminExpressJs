@@ -2,13 +2,13 @@ const { check } = require('express-validator');
 const PostModel = require('../models/PostModel');
 var validatePost = () => {
     return [
-        check('title').not().isEmpty().trim().withMessage('Tiêu đề bài viết không được để trống.').custom(  (title, {req}) => {
+        check('title').not().isEmpty().trim().withMessage('Tiêu đề bài viết không được để trống.').custom((title, {req}) => {
             return new Promise(async(res, rej) => {
                 const post = await PostModel.findByTitle(title);
                 if(post != null && req.params.id && post._id != req.params.id){
-                    rej('Tên bài viết đã tồn tại.');
+                    rej('Tên bài viết đã tồn tại.');// case update
                 } else if(post != null && !req.params.id){
-                    rej('Tên bài viết đã tồn tại.');
+                    rej('Tên bài viết đã tồn tại.');// case add
                 }
                 else{
                     res(true);

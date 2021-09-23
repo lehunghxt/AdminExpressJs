@@ -98,3 +98,13 @@ module.exports.gen = async () => {
     res(true);
   });
 };
+module.exports.findById = async (id) => {
+    return new Promise((res, rej) => {
+        UserTypes.findOne({_id : id }).then(data => {
+            res(data)
+        }).catch(err => {
+            console.log(err);
+            res(null);
+        })
+    })
+}

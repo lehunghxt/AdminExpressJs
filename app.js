@@ -3,10 +3,13 @@ const exphbs = require("express-handlebars");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const flash = require("connect-flash");
+const methodOverride = require('method-override')
 const { randomBytes } = require("crypto");
 require("dotenv").config();
 const CheckUserPerMission = require('./Helpers/checkPermission');
 const {CurrentUser} = require('./Helpers/CurrentUser');
+
+
 const app = express();
 const port = process.env.PORT || 3000;
 const path = require('path');
@@ -24,6 +27,16 @@ global.__basedir = path.join(__dirname, 'public');
 app.use(express.static(path.join(__dirname, 'public'), option));
 app.use(express.json({ limit: "100mb" }));
 app.use(express.urlencoded({ limit: "100mb", extended: true }));
+//OVERRIDE METHOD
+app.use(methodOverride(function (req, res) {
+    if (req.body && typeof req.body === 'object' && '_method' in req.body) {
+      // look in urlencoded POST bodies and delete it
+      var method = req.body._method
+      delete req.body._method
+      return method
+    }
+  }))
+//===================================================
 
 app.use(cookieParser("secret"));
 //app.use(session({cookie: { maxAge: 60000 }}));

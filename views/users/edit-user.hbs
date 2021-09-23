@@ -1,3 +1,6 @@
+<script>
+    $('#liUser').addClass('active');
+</script>
 <h4>Cập nhập thông tin thành viên</h4>
 <div style="display: flex;justify-content: center;align-items: center;">
     <div class="card shadow mb-4 col-md-12">
@@ -7,62 +10,80 @@
                     <form action="/user/edit/{{user._id}}" method="POST">
                         <div class="row">
                             <div class="col-xs-12 col-sm-12 col-md-6">
-                                <input type="hidden" name="csrf" value="{{token}}">
+                                
                                 <div class="form-group">
-                                    <input type="text" class="form-control form-control-sm" id="name" name="name"
+                                    <label class="text-success">Tên thành viên</label>
+                                    <input type="text" class="form-control form-control-sm {{ validateErrClass dataErr 'name' 'is-invalid' }}" id="name" name="name"
                                         placeholder="Tên thành viên" value="{{ user.name }}">
+                                        <div class="invalid-feedback">{{ validateErr dataErr 'name' }}</div>
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-6">
                                 <div class="form-group">
-                                    <input type="email" class="form-control form-control-sm" id="email" name="email" placeholder="Email"
+                                    <label class="text-success">Email</label>
+                                    <input type="email" class="form-control form-control-sm {{ validateErrClass dataErr 'email' 'is-invalid' }}" id="email" name="email" placeholder="Email"
                                         value="{{ user.email }}">
+                                        <div class="invalid-feedback">{{ validateErr dataErr 'email' }}</div>
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-6">
                                 <div class="form-group">
-                                    <input type="text" class="form-control form-control-sm" id="username" name="username"
+                                    <label class="text-success">Tên đăng nhập</label>
+                                    <input type="text" class="form-control form-control-sm {{ validateErrClass dataErr 'username' 'is-invalid' }}" id="username" name="username"
                                         placeholder="Tên đăng nhập" value="{{ user.username }}">
+                                        <div class="invalid-feedback">{{ validateErr dataErr 'username' }}</div>
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-6">
                                 <div class="form-group">
-                                    <input type="password" class="form-control form-control-sm" id="password" name="password"
+                                    <label class="text-success">Mật khẩu</label>
+                                    <input type="password" class="form-control form-control-sm {{ validateErrClass dataErr 'password' 'is-invalid' }}" id="password" name="password"
                                         placeholder="Mật khẩu" value="">
+                                        <div class="invalid-feedback">{{ validateErr dataErr 'password' }}</div>
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-6">
                                 <div class="form-group">
-                                    <input type="text" class="form-control form-control-sm" id="address" name="address"
+                                    <label class="text-success">Địa chỉ</label>
+                                    <input type="text" class="form-control form-control-sm {{ validateErrClass dataErr 'address' 'is-invalid' }}" id="address" name="address"
                                         placeholder="Địa chỉ" value="{{ user.address }}">
+                                        <div class="invalid-feedback">{{ validateErr dataErr 'address' }}</div>
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-6">
                                 <div class="form-group">
-                                    <input type="text" class="form-control form-control-sm" id="phone" name="phone"
+                                    <label class="text-success">Số điện thoại</label>
+                                    <input type="text" class="form-control form-control-sm {{ validateErrClass dataErr 'phone' 'is-invalid' }}" id="phone" name="phone"
                                         placeholder="số điện thoại" value="{{ user.phone }}">
+                                        <div class="invalid-feedback">{{ validateErr dataErr 'phone' }}</div>
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-6">
                                 <div class="form-group">
-                                    <select name="gender" id="gender" class="form-control form-control-sm">
+                                    <label class="text-success" for="gender">Giới tính</label>
+                                    <select name="gender" id="gender" class="form-control form-control-sm {{ validateErrClass dataErr 'gender' 'is-invalid' }}">
                                         <option value="male" {{ compareString 'male' user.gender 'selected' }}>Nam</option>
                                         <option value="female" {{ compareString 'female' user.gender 'selected' }}>Nữ
                                         </option>
                                     </select>
+                                    <div class="invalid-feedback">{{ validateErr dataErr 'gender' }}</div>
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-6">
                                 <div class="form-group">
-                                    <select name="userType" id="userType" class="form-control form-control-sm">
+                                    <label class="text-success" for="userType">Loại tài khoản</label>
+                                    <select name="userType" id="userType" class="form-control form-control-sm {{ validateErrClass dataErr 'userType' 'is-invalid' }}">
                                         {{#each listUserType}}
                                         <option value="{{ this._id }}" {{ compareString this.TypeName
                                             ../user.userType.TypeName 'selected' }}>{{this.TypeName}}</option>
                                         {{/each}}
                                     </select>
+                                    <div class="invalid-feedback">{{ validateErr dataErr 'userType' }}</div>
                                 </div>
                             </div>
                         </div>
+                        <input type="hidden" name="csrf" value="{{token}}">
+                        <input type="hidden" name="_id" value="{{ user._id }}">
                         <input type="submit" value="cập nhập" class="btn btn-success btn-sm">
                         <a href="/user" class="btn btn-danger btn-sm">Quay lại</a>
                     </form>

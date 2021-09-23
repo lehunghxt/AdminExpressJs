@@ -1,22 +1,29 @@
+<script>
+    $('#liRole').addClass('active');
+</script>
 <h4>Quản lý quyền</h4>
 <div class="card shadow mb-4">
   <div class="card-body">
       <form action="/role" method="POST">
     <div class="row">
-      <input type="hidden" name="csrf" value="{{token}}">
         <div class="col-md-4">
           <div class="form-group">
-            <input type="text" class="form-control form-control-sm" placeholder="Nhóm quyền" id="roleGroup" name="roleGroup">
+            <input type="text" class="form-control form-control-sm {{ validateErrClass dataErr 'roleGroup' 'is-invalid' }}" 
+                placeholder="Nhóm quyền" id="roleGroup" name="roleGroup" value="{{ role.roleGroup }}">
+            <div class="invalid-feedback">{{ validateErr dataErr 'roleGroup' }}</div>
           </div>
         </div>
         <div class="col-md-4">
           <div class="form-group">
-            <input type="text" class="form-control form-control-sm" placeholder="Tên quyền" id="roleName" name="roleName" autocomplete="off">
+            <input type="text" class="form-control form-control-sm {{ validateErrClass dataErr 'roleName' 'is-invalid' }}" 
+                placeholder="Tên quyền" id="roleName" name="roleName" autocomplete="off" value="{{ role.roleName }}">
+            <div class="invalid-feedback">{{ validateErr dataErr 'roleName' }}</div>
           </div>
         </div>
         <div class="col-md-4">
           <div class="form-group">
-            <input type="submit" class="form-control form-control-sm btn btn-success" value="Lưu lại">
+              <input type="hidden" name="csrf" value="{{token}}">
+            <input type="submit" class="form-control btn-sm form-control-sm btn btn-success" value="Lưu lại">
           </div>
         </div>
     </div>
@@ -35,7 +42,7 @@
 </div>
 <div class="grid">
   {{#each listRole}}
-    <div class="grid-item shadow mr-3 rounded boxRoleGroup" style="width: 300px;">
+    <div class="grid-item shadow mr-3 mb-3 rounded boxRoleGroup" style="width: 300px;">
       <table class="table table-sm table-hover">
         <thead class="bg-dark">
           <tr>
@@ -48,7 +55,7 @@
           {{#each this.roles}}
           <tr>
             <td  title="{{this.roleCode}}">{{this.roleName}}</td>
-            <td>
+            <td class="text-right">
               <a href="#" 
                  class="text-success text-decoration-none" 
                  roleGroup="{{this.roleGroup}}" 
@@ -92,12 +99,12 @@
     </div>
   </div>
 </div>
-<!-- Modal -->
+<!-- Modal edit role -->
 <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title text-success" id="editModalTitle"></h5>
+        <h5 class="modal-title text-success" id="editModalTitle">{{ roleEdit.editRoleGroup }}</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -106,8 +113,10 @@
         <div class="modal-body">
           <div class="form-group">
             <input type="hidden" name="csrf" value="{{ token }}">
-            <input type="hidden" name="roleId" id="roleId" value="">
-            <input type="text" class="form-control" name="editName" id="editName" value="">
+            <input type="hidden" name="roleId" id="roleId" value="{{ roleEdit.roleId }}">
+            <input type="hidden" name="editRoleGroup" id="editRoleGroup" value="{{ roleEdit.editRoleGroup }}">
+            <input type="text" class="form-control {{ validateErrClass dataErr 'editName' 'is-invalid' }}" name="editName" id="editName" value="{{ roleEdit.editName }}">
+            <div class="invalid-feedback">{{ validateErr dataErr 'editName' }}</div>
           </div>
         </div>
         <div class="modal-footer">
@@ -120,15 +129,22 @@
 </div>
 <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
 <script>
+    $(document).ready(function(){
+        //===========================
+        const showModal = '{{showModal}}';
+        if(showModal == 'true'){
+            $('#editModal').modal('toggle');
+        }
+    })
   $('.grid').masonry({});
   function handleEdit(e){
     const roleGroup = $(e).attr('roleGroup');
     const roleName = $(e).attr('roleName');
     const roleId = $(e).attr('roleId');
-    console.log(roleId);
     $('#editModalTitle').text(roleGroup);
     $('#editName').val(roleName);
     $('#roleId').val(roleId);
+    $('#editRoleGroup').val(roleGroup);
     $('#editModal').modal('toggle')
   }
   $('#editModal').on('hidden.bs.modal', function () {
@@ -144,4 +160,5 @@
   $('#deleteModal').on('hidden.bs.modal', function () {
     $('#roleIdDel').val('');
   });
+  
 </script>

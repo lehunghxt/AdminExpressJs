@@ -2,16 +2,17 @@ const express = require('express');
 const postRoute = express.Router();
 const PostController = require('../controllers/PostController');
 const {checkCsrfToken} = require('../middleware/index');
+const PostMiddleware = require('../middleware/PostMiddleware');
 const {validatePost} = require('../Validates/PostValidate');
 
 postRoute.get('/gen', PostController.gen);
-postRoute.get('/add', PostController.add);
-postRoute.post('/add', validatePost(), checkCsrfToken, PostController.store);
-postRoute.get('/edit/:id', PostController.edit);
-postRoute.post('/edit/:id', validatePost(), checkCsrfToken, PostController.update);
-postRoute.post('/delete', checkCsrfToken, PostController.delete);
-postRoute.post('/delete-all', checkCsrfToken, PostController.deleteAll);
+postRoute.get('/add', PostMiddleware.Thembaiviet, PostController.add);
+postRoute.post('/add', validatePost(), [PostMiddleware.Thembaiviet, checkCsrfToken], PostController.store);
+postRoute.get('/edit/:id', PostMiddleware.Suabaiviet, PostController.edit);
+postRoute.post('/edit/:id', validatePost(), [PostMiddleware.Suabaiviet, checkCsrfToken], PostController.update);
+postRoute.post('/delete', [PostMiddleware.Xoabaiviet, checkCsrfToken],PostController.delete);
+postRoute.post('/delete-all', [PostMiddleware.Xoabaiviet, checkCsrfToken], PostController.deleteAll);
 postRoute.get('/ajaxPost/:id', PostController.ajaxPost);
-postRoute.get('/', PostController.view);
+postRoute.get('/', PostMiddleware.Xemdanhsachbaiviet, PostController.view);
 
 module.exports = postRoute;

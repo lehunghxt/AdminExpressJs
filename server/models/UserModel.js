@@ -148,3 +148,20 @@ module.exports.gen = async () => {
     res(true);
   });
 };
+
+module.exports.findByUsername = async (username) => {
+    return new Promise(async (res, rej) => {
+        await Users.findOne({username : username}).then(data => res(data)).catch(err => {
+            console.log(err);
+            res(null);
+        })
+    });
+  };
+  module.exports.findByEmail = async (email) => {
+    return new Promise(async (res, rej) => {
+        await Users.findOne({email : email}).then(data => res(data)).catch(err => {
+            console.log(err);
+            res(null);
+        })
+    });
+  };

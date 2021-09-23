@@ -12,7 +12,7 @@
             <span>Dashboard</span></a>
     </li>
     {{#if UserCan.Xemdanhsachthanhvien }}
-        <li class="nav-item">
+        <li class="nav-item" id="liUser">
             <a class="nav-link" href="/user">
                 <i class="fas fa-user"></i>
                 <span>Quản lý thành viên</span>
@@ -20,7 +20,7 @@
         </li>
     {{/if}}
     {{#if UserCan.Xemdanhsachbaiviet }}
-        <li class="nav-item">
+        <li class="nav-item" id="liPost">
             <a class="nav-link" href="/post">
                 <i class="fas fa-fw fa-address-book"></i>
                 <span>Quản lý bài viết</span>
@@ -28,7 +28,7 @@
         </li>
     {{/if}}
     {{#if UserCan.Xemdanhsachquyen }}
-        <li class="nav-item">
+        <li class="nav-item" id="liRole">
             <a class="nav-link" href="/role">
                 <i class="fas fa-fw fa-address-book"></i>
                 <span>Quản lý quyền</span>
@@ -36,7 +36,7 @@
         </li>
     {{/if}}
     {{#if UserCan.Xemdanhsachloaitaikhoan }}
-        <li class="nav-item">
+        <li class="nav-item" id="liUserType">
             <a class="nav-link" href="/user-type">
                 <i class="fas fa-fw fa-address-book"></i>
                 <span>Quản lý loại tài khoản</span>
@@ -44,7 +44,7 @@
         </li>
     {{/if}}
     {{#if UserCan.Xemdanhsachnhomquyen }}
-        <li class="nav-item">
+        <li class="nav-item" id="liRoleGroup">
             <a class="nav-link" href="/role-group">
                 <i class="fas fa-fw fa-address-book"></i>
                 <span>Quản lý nhóm quyền</span>

@@ -54,3 +54,13 @@ module.exports.deleteRole = async (data) => {
     });
   });
 };
+
+module.exports.findByRoleName = async (roleName) => {
+    return new Promise((res, rej) => {
+      Roles.findOne({ roleName: roleName }).then(data => res(data)).catch(err => {
+          console.log(err);
+          res(null);
+      });
+    });
+  };
+

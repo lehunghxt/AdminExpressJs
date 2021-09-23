@@ -1,3 +1,6 @@
+<script>
+    $('#liUser').addClass('active');
+</script>
 <h4>Danh sách thành viên</h4>
 <div class="card shadow mb-4">
 	<div class="card-body">
@@ -31,6 +34,7 @@
 							</th>
 							<th style="width: 30px;">STT</th>
 							<th>Tên</th>
+							<th>Username</th>
 							<th>Email</th>
 							<th>Địa chỉ</th>
 							<th class="text-center">Số điện thoại</th>
@@ -52,6 +56,7 @@
 								<td class="text-center">
 									{{sequenNumber ../currentPage @index }}</td>
 								<td>{{this.name}}</td>
+								<td class="text-center">{{this.username}}</td>
 								<td>{{this.email}}</td>
 								<td>{{this.address}}</td>
 								<td class="text-center">{{this.phone}}</td>

@@ -1,5 +1,6 @@
 const UserModel = require("../models/UserModel");
 const UserTypeModel = require("../models/UserTypeModel");
+const { validationResult } = require("express-validator");
 
 exports.view = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
@@ -22,11 +23,26 @@ exports.view = async (req, res) => {
 exports.add = async (req, res) => {
   const listUserType = await UserTypeModel.list();
   res.render("users/add-user", {
+    title: "Thêm thành viên",
     listUserType: listUserType,
     token: req.session.csrf,
   });
 };
 exports.store = async (req, res) => {
+    const errors = validationResult(req);
+    const listUserType = await UserTypeModel.list();
+    if (!errors.isEmpty()) {
+        const dataErr = errors.array();
+        res.render("users/add-user", {
+        title: "Thêm thành viên",
+        token: req.session.csrf,
+        dataErr,
+        user: req.body,
+        listUserType: listUserType,
+        });
+        return;
+    }
+
   const data = req.body;
   const dataAdded = await UserModel.add(data);
   req.flash("message", `đã thêm người dùng: ${dataAdded.name} !`);
@@ -37,12 +53,27 @@ exports.edit = async (req, res) => {
   const userdata = await UserModel.find(id);
   const listUserType = await UserTypeModel.list();
   res.render("users/edit-user", {
+    title: "Cập nhập thành viên",
     user: userdata,
     token: req.session.csrf,
     listUserType: listUserType,
   });
 };
 exports.update = async (req, res) => {
+    const errors = validationResult(req);
+    const listUserType = await UserTypeModel.list();
+  if (!errors.isEmpty()) {
+    const dataErr = errors.array();
+    res.render("users/add-user", {
+      title: "Cập nhập thành viên",
+      token: req.session.csrf,
+      dataErr,
+      user: req.body,
+      listUserType: listUserType,
+    });
+    return;
+  }
+
   const data = req.body;
   const { id } = req.params;
   const dataupdate = await UserModel.update(data, id);

@@ -1,3 +1,6 @@
+<script>
+    $('#liUserType').addClass('active');
+</script>
 <h4>Danh sách loại tài khoản</h4>
 <div class="card shadow mb-4">
   <div class="card-body">
@@ -70,7 +73,7 @@
     </div>
   </div>
 </div>
-<!-- Modal For One User -->
+<!-- Modal For delete One User -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -94,7 +97,7 @@
     </div>
   </div>
 </div>
-<!-- Modal For Mul User -->
+<!-- Modal For delete Mul User -->
 <div class="modal fade" id="myModalMulUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -115,12 +118,12 @@
   </div>
 </div>
 
-<!-- Modal add and edit -->
+<!-- Modal add and edit user type -->
 <div class="modal fade" id="addAndEdit" tabindex="-1" role="dialog" aria-labelledby="addAndEditTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="addAndEditTitle"></h5>
+        <h5 class="modal-title text-success" id="addAndEditTitle"></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -128,16 +131,21 @@
       <form action="" method="POST" id="formAddEdit">
         <input type="hidden" name="csrf" value="{{ token }}">
         <input type="hidden" id="TypeId" name="TypeId" value="">
+        <input type="hidden" id="_method" name="_method" value="">
         <div class="modal-body">
           <div class="row">
             <div class="col-md-6">
               <div class="form-group">
-                <input type="text" class="form-control" id="TypeName" name="TypeName" required>
+                  <label class="text-success" for="">Loại tài khoản</label>
+                    <input type="text" class="form-control {{ validateErrClass dataErr 'TypeName' 'is-invalid' }}" id="TypeName" name="TypeName" value="{{ userType.TypeName }}">
+                    <div class="invalid-feedback">{{ validateErr dataErr 'TypeName' }}</div>
               </div>
             </div>
             <div class="col-md-6">
               <div class="form-group">
-                <input type="text" class="form-control" id="TypeCode" name="TypeCode" required>
+                    <label class="text-success" for="">Code</label>
+                    <input type="text" class="form-control {{ validateErrClass dataErr 'TypeCode' 'is-invalid' }}" id="TypeCode" name="TypeCode" value="{{ userType.TypeCode }}">
+                    <div class="invalid-feedback">{{ validateErr dataErr 'TypeCode' }}</div>
               </div>
             </div>
           </div>
@@ -153,6 +161,12 @@
 
 
 <script>
+    $(document).ready(function() {
+        const showModal = '{{ showModal }}';
+        if(showModal == 'true'){
+            $('#addAndEdit').modal('toggle');
+        }
+    })
   function handleDelete(id) {
     $('#userTypeId').val(id);
     $('#myModal').modal('toggle');
@@ -178,9 +192,11 @@
   }
   function handleAction(data = null){
     const title = (data == null) ? 'Thêm loại tài khoản' : 'Sửa loại tài khoản';
-    const action = (data == null) ? '/user-type/add' : '/user-type/edit';
+    const action = (data == null) ? '/user-type/' : '/user-type/';
+    const method = (data == null) ? 'POST' : 'PUT';
     $('#addAndEditTitle').text(title);
     $('#formAddEdit').attr('action', action);
+    $('#_method').val(method);
     if(data){
       const TypeId = $(data).attr('typeid');
       const TypeName = $(data).attr('typename');

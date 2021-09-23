@@ -1,4 +1,6 @@
 const UserTypeModel = require("../models/UserTypeModel");
+const { validationResult } = require("express-validator");
+
 exports.view = async (req, res) => {
   const listUserType = await UserTypeModel.list();
   const existData = listUserType.length > 0 ? true : false;
@@ -8,15 +10,46 @@ exports.view = async (req, res) => {
     existData: existData,
     message: message,
     token: req.session.csrf,
+    title: "Danh sách loại tài khoản",
   });
 };
 exports.store = async (req, res) => {
+  const errors = validationResult(req);
+  const listUserType = await UserTypeModel.list();
+  if (!errors.isEmpty()) {
+    const dataErr = errors.array();
+    res.render("userType/list-user-type", {
+      title: "Danh sách loại tài khoản",
+      token: req.session.csrf,
+      dataErr,
+      userType: req.body,
+      listUserType: listUserType,
+      showModal : true,
+    });
+    return;
+  }
+
   const data = req.body;
   const dataAdded = await UserTypeModel.add(data);
   req.flash("message", `Đã thêm loại tài khoản: ${dataAdded.typeName} !`);
   res.redirect("/user-type");
 };
 exports.update = async (req, res) => {
+  const errors = validationResult(req);
+  const listUserType = await UserTypeModel.list();
+  if (!errors.isEmpty()) {
+    const dataErr = errors.array();
+    res.render("userType/list-user-type", {
+      title: "Danh sách loại tài khoản",
+      token: req.session.csrf,
+      dataErr,
+      userType: req.body,
+      listUserType: listUserType,
+      showModal : true,
+    });
+    return;
+  }
+
   const data = req.body;
   const { TypeId } = req.body;
   const dataUpdated = await UserTypeModel.update(data, TypeId);
