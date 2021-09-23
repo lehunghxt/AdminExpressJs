@@ -9,7 +9,19 @@ const CheckUserPerMission = require('./Helpers/checkPermission');
 const {CurrentUser} = require('./Helpers/CurrentUser');
 const app = express();
 const port = process.env.PORT || 3000;
-
+const path = require('path');
+const option = {
+    etag : true,
+    maxAge : 3600000,
+    redirect : true,
+    setHeaders : function(res, path, stat){
+        res.set({
+            'x-timestamp' : Date.now(),
+        });
+    }
+}
+global.__basedir = path.join(__dirname, 'public');
+app.use(express.static(path.join(__dirname, 'public'), option));
 app.use(express.json({ limit: "100mb" }));
 app.use(express.urlencoded({ limit: "100mb", extended: true }));
 
@@ -26,12 +38,9 @@ app.use(
 );
 app.use(flash());
 
-app.use(express.static("public"));
-
 app.engine("hbs", exphbs({ extname: ".hbs" }));
 app.set("view engine", "hbs");
 var hbs = exphbs.create({});
-
 // register new function
 const helper = require("./helperexpresshandlebar");
 hbs.handlebars.registerHelper("pagination", helper.pagination);
@@ -39,6 +48,9 @@ hbs.handlebars.registerHelper("sequenNumber", helper.sequenNumber);
 hbs.handlebars.registerHelper("compareString", helper.compareString);
 hbs.handlebars.registerHelper("handleGender", helper.handleGender);
 hbs.handlebars.registerHelper("showTitle", helper.showTitle);
+hbs.handlebars.registerHelper("validateErr", helper.validateErr);
+hbs.handlebars.registerHelper("validateErrClass", helper.validateErrClass);
+
 
 
 app.use(async function (req, res, next) {

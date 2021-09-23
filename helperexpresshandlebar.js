@@ -37,5 +37,20 @@ module.exports.handleGender = (gender) => {
 module.exports.showTitle = (title) => {
     return title ? title : 'Admin CURD';
   }
+
+  module.exports.validateErr = (err, type) => {
+    if(!err) return '';
+    const finded = err.find((item) => {
+        return item.param == type
+    })
+    return finded ? finded.msg : '';
+  }
+  module.exports.validateErrClass = (err, type, output) => {
+    if(!err) return '';
+    const finded = err.find((item) => {
+        return item.param == type
+    })
+    return finded ? output : '';
+  }
   
 

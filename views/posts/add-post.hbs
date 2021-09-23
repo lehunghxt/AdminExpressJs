@@ -1,7 +1,7 @@
 <script src="../../../asset/ckeditor/ckeditor.js"></script>
 <h4>Thêm bài viết</h4>
 <div style="display: flex;justify-content: center;align-items: center;">
-    <div class="card shadow mb-4 col-md-6">
+    <div class="card shadow mb-4 col-xs-12 col-sm-12 col-md-11 col-lg-9">
         <div class="card-body">
             <div class="row">
                 <div class="col-sm-12">
@@ -9,21 +9,26 @@
                         <div class="form-group">
                             <input type="hidden" name="csrf" value="{{token}}">
                             {{#if UserCan.Thembaiviet}}
-                            <input type="submit" value="Lưu" class="btn btn-success btn-sm">
+                                <input type="submit" value="Lưu" class="btn btn-success btn-sm">
                             {{/if}}
                             <a href="/post" class="btn btn-danger btn-sm">Quay lại</a>
                         </div>
                         <div class="form-group">
-                            <input type="text" class="form-control form-control-sm" id="title" name="title"
-                                placeholder="Tiêu đề bài viết">
+                            <label class="text-success" for="title">Tiêu đề:</label>
+                            <input type="text" class="form-control form-control-sm {{ validateErrClass dataErr 'title' 'is-invalid' }}" 
+                                    id="title" name="title" placeholder="Tiêu đề bài viết" value="{{ post.title }}">
+                            <div class="invalid-feedback">{{ validateErr dataErr 'title' }}</div>
                         </div>
                         <div class="form-group">
-                            <input type="text" class="form-control" id="description" name="description"
-                                placeholder="Mô tả bài viết">
+                            <label class="text-success" for="description">Mô tả:</label>
+                            <input type="text" class="form-control form-control-sm {{ validateErrClass dataErr 'description' 'is-invalid' }}" 
+                                    id="description" name="description" placeholder="Mô tả bài viết" value="{{ post.description }}">
+                            <div class="invalid-feedback">{{ validateErr dataErr 'description' }}</div>
                         </div>
                         <div class="form-group">
-                            <label class="text-success" for="contentPost">Nội dung bài viết</label>
-                            <textarea id="contentPost" name="contentPost"></textarea>
+                            <label class="text-success" for="contentPost">Nội dung:</label><br>
+                            <span class="text-danger" style="font-size: 80%;">{{ validateErr dataErr 'content' }}</span>
+                            <textarea class="form-control" id="contentPost" name="content">{{{ post.content }}}</textarea>
                             <script>
                                 CKEDITOR.replace('contentPost');
                             </script>

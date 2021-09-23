@@ -1,5 +1,5 @@
 const PostModel = require("../models/PostModel");
-const { userCan } = require("../../Helpers/helper");
+const { validationResult } = require("express-validator");
 exports.view = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   var perPage = 20;
@@ -14,15 +14,27 @@ exports.view = async (req, res) => {
     existData: existData,
     message: message,
     token: req.session.csrf,
-    title : 'Quản lý bài viết'
+    title: "Quản lý bài viết",
   });
 };
 exports.add = (req, res) => {
-  res.render("posts/add-post",{
-    title : 'Thêm bài viết'
+  res.render("posts/add-post", {
+    title: "Thêm bài viết",
+    token: req.session.csrf,
   });
 };
 exports.store = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const dataErr = errors.array();
+    res.render("posts/add-post", {
+      title: "Thêm bài viết",
+      token: req.session.csrf,
+      dataErr,
+      post: req.body,
+    });
+    return;
+  }
   const data = req.body;
   data.CurrentUser = req.session.CurrentUser;
   const dataAdded = await PostModel.addpost(data);
@@ -33,14 +45,25 @@ exports.store = async (req, res) => {
 exports.edit = async (req, res) => {
   const { id } = req.params;
   const postdata = await PostModel.findOnePost(id);
-  res.render("posts/edit-post", { 
-      post: postdata, 
-      token: req.session.csrf,
-      title : 'Sửa bài viết'
-     });
+  res.render("posts/edit-post", {
+    post: postdata,
+    token: req.session.csrf,
+    title: "Sửa bài viết",
+  });
 };
 
 exports.update = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const dataErr = errors.array();
+    res.render("posts/edit-post", {
+        title: "Sửa bài viết",
+        token: req.session.csrf,
+        dataErr,
+        post: req.body,
+    });
+    return;
+  }
   const data = req.body;
   data.User = CurrentUser;
   const { id } = req.params;
@@ -77,7 +100,7 @@ exports.gen = async (req, res) => {
 };
 
 exports.ajaxPost = async (req, res) => {
-    const { id } = req.params;
-    const post = await PostModel.findOnePost(id);
-    res.json({post : post}).status(200);
-  };
+  const { id } = req.params;
+  const post = await PostModel.findOnePost(id);
+  res.json({ post: post }).status(200);
+};

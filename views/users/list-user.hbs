@@ -1,10 +1,3 @@
-<style>
-    .stick{
-        position: sticky;
-        left: -15px;
-        backdrop-filter: blur(1000000px);
-    }
-</style>
 <h4>Danh sách thành viên</h4>
 <div class="card shadow mb-4">
 	<div class="card-body">
@@ -37,7 +30,7 @@
 								<input type="checkbox" id="selectAll">
 							</th>
 							<th style="width: 30px;">STT</th>
-							<th class="stick">Tên</th>
+							<th>Tên</th>
 							<th>Email</th>
 							<th>Địa chỉ</th>
 							<th class="text-center">Số điện thoại</th>
@@ -58,7 +51,7 @@
 								</td>
 								<td class="text-center">
 									{{sequenNumber ../currentPage @index }}</td>
-								<td class="stick">{{this.name}}</td>
+								<td>{{this.name}}</td>
 								<td>{{this.email}}</td>
 								<td>{{this.address}}</td>
 								<td class="text-center">{{this.phone}}</td>

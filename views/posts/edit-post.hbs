@@ -12,20 +12,24 @@
                         {{/if}}
                         <a href="/post" class="btn btn-danger btn-sm">Quay lại</a>
                         <input type="hidden" name="csrf" value="{{token}}">
+                        <input type="hidden" name="_id" value="{{post._id}}">
                     </div>
                     <div class="form-group">
                         <label class="text-success" for="title">Tiêu đề bài viết</label>
-                        <input type="text" class="form-control form-control-sm" id="title" name="title"
-                            placeholder="Tiêu đề bài viết" value="{{ post.title }}">
+                        <input type="text" class="form-control form-control-sm {{ validateErrClass dataErr 'title' 'is-invalid' }}" 
+                            id="title" name="title" placeholder="Tiêu đề bài viết" value="{{ post.title }}">
+                        <div class="invalid-feedback">{{ validateErr dataErr 'title' }}</div>
                     </div>
                     <div class="form-group">
                         <label class="text-success" for="">Nội dung bài viết</label>
-                        <input type="text" class="form-control form-control-sm" id="description" name="description"
+                        <input type="text" class="form-control form-control-sm {{ validateErrClass dataErr 'description' 'is-invalid' }}" id="description" name="description"
                             placeholder="Mô tả bài viết" value="{{ post.description }}">
+                        <div class="invalid-feedback">{{ validateErr dataErr 'description' }}</div>
                     </div>
                     <div class="form-group">
-                        <label class="text-success" for="contentPost">Nội dung bài viết</label>
-                        <textarea id="contentPost" class="form-control form-control-sm" name="contentPost">{{ post.content }}</textarea>
+                        <label class="text-success" for="contentPost">Nội dung bài viết</label><br>
+                        <span class="text-danger" style="font-size: 80%;">{{ validateErr dataErr 'content' }}</span>
+                        <textarea id="contentPost" class="form-control form-control-sm" name="content">{{{ post.content }}}</textarea>
                         <script>
                             CKEDITOR.replace('contentPost');
                         </script>
