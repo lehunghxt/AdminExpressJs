@@ -9,7 +9,6 @@ require("dotenv").config();
 const CheckUserPerMission = require('./Helpers/checkPermission');
 const {CurrentUser} = require('./Helpers/CurrentUser');
 
-
 const app = express();
 const port = process.env.PORT || 3000;
 const path = require('path');
@@ -42,12 +41,12 @@ app.use(cookieParser("secret"));
 //app.use(session({cookie: { maxAge: 60000 }}));
 const oneDay = 1000 * 60 * 60 * 24;
 app.use(
-  session({
-    secret: "thisismysecrctekeyfhrgfgrfrty84fwir767",
-    saveUninitialized: true,
-    cookie: { maxAge: oneDay },
-    resave: false,
-  })
+    session({
+        secret: "thisismysecrctekeyfhrgfgrfrty84fwir767",
+        saveUninitialized: true,
+        cookie: { maxAge: oneDay },
+        resave: false,
+    })
 );
 app.use(flash());
 
@@ -64,23 +63,21 @@ hbs.handlebars.registerHelper("showTitle", helper.showTitle);
 hbs.handlebars.registerHelper("validateErr", helper.validateErr);
 hbs.handlebars.registerHelper("validateErrClass", helper.validateErrClass);
 
-
-
 app.use(async function (req, res, next) {
-  if (req.session.csrf === undefined) {
-    req.session.csrf = randomBytes(100).toString("base64");
-  }
-  if (req.session.CurrentUser) {
-    const id = req.session.CurrentUser._id;
-    const dataCurrentUser = await CurrentUser(id);
-    app.locals.CurrentUser = dataCurrentUser;
-    app.locals.UserCan = new CheckUserPerMission(
-        dataCurrentUser.userType.Roles.split(",")
-    );
-    global.CurrentUser = dataCurrentUser;
-  }
-
-  next();
+    if (req.session.csrf === undefined) {
+        req.session.csrf = randomBytes(100).toString("base64");
+    }
+    if (req.session.CurrentUser) {
+        const id = req.session.CurrentUser._id;
+        const dataCurrentUser = await CurrentUser(id);
+        app.locals.CurrentUser = dataCurrentUser;
+        req.session.CurrentUser = dataCurrentUser;
+        app.locals.UserCan = new CheckUserPerMission(
+            dataCurrentUser.userType.Roles.split(",")
+        );
+        global.CurrentUser = dataCurrentUser;
+    }
+    next();
 });
 
 //ROUTE

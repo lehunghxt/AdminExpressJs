@@ -16,23 +16,25 @@ const UserModel = new Schema({
     phone: String,
     gender: String,
     userType: { type: Schema.Types.ObjectId, ref: 'UserTypes' },
-    posts : [ { type: Schema.Types.ObjectId, ref: 'Posts' } ]
-  });
+    posts : [ { type: Schema.Types.ObjectId, ref: 'Posts' } ],
+    status: Number,
+});
 const PostModel = new Schema({
-  title: String,
-  content: String,
-  description: String,
-  author: { type: Schema.Types.ObjectId, ref: 'Users' },
+    title: String,
+    content: String,
+    description: String,
+    author: { type: Schema.Types.ObjectId, ref: 'Users' },
+    status: Number,
 });
 const RoleModel = new Schema({
-  roleCode: String,
-  roleName: String,
-  roleGroup: String,
+    roleCode: String,
+    roleName: String,
+    roleGroup: String,
 });
 const UserTypeModel = new Schema({
-  TypeName: String,
-  TypeCode: Number,
-  Roles : String,
+    TypeName: String,
+    TypeCode: Number,
+    Roles : String,
 });
 
 const Users = mongoose.model("Users", UserModel);

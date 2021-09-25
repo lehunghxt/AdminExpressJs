@@ -1,5 +1,6 @@
 const { Posts, Users } = require("../models/init");
 const bcrypt = require("bcrypt");
+const { model } = require("mongoose");
 
 module.exports.addpost = async (data) => {
   return new Promise(async (res, rej) => {
@@ -120,3 +121,21 @@ module.exports.gen = async (currentUser) => {
     res(true);
   });
 };
+module.exports.ajaxChangeStatus = async (id) => {
+    return new Promise( async (res, rej) => {
+        const post = await Posts.findOne({_id : id});
+        if(post != null){
+            const SHOW = 1;
+            const HIDE = 2;
+            const currentStatus = post.status;
+            await Posts.findByIdAndUpdate({_id : id},{
+                status : (currentStatus == SHOW) ? HIDE : SHOW,
+            }).then(data => res(data)).catch(err => {
+                console.log(err);
+                res(null);
+            })
+        }else{
+            res(null);
+        }
+    })
+}

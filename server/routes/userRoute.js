@@ -14,4 +14,7 @@ userRoute.post("/delete", [checkCsrfToken, UserMiddleware.Xoathanhvien], UserCon
 userRoute.post("/delete-mul", [checkCsrfToken, UserMiddleware.Xoathanhvien], UserController.deleteMul);
 userRoute.get("/", UserMiddleware.Xemdanhsachthanhvien,UserController.view);
 
+userRoute.post("/ajaxChangeStatus", checkCsrfToken, UserController.ajaxChangeStatus);
+userRoute.get("/listjson",  UserController.listjson);
+
 module.exports = userRoute;

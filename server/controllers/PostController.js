@@ -1,5 +1,6 @@
 const PostModel = require("../models/PostModel");
 const { validationResult } = require("express-validator");
+const { Posts } = require("../models/init");
 exports.view = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   var perPage = 20;
@@ -104,3 +105,12 @@ exports.ajaxPost = async (req, res) => {
   const post = await PostModel.findOnePost(id);
   res.json({ post: post }).status(200);
 };
+exports.ajaxChangeStatus = async (req, res) => {
+    const {id} = req.body;
+    const post = await PostModel.ajaxChangeStatus(id);
+    res.status(200).json({
+        status : post == null ? 0 : post.status,
+        message : post == null ? 'Không cập nhập được trạng thái bài viết.' : 'Đã cập nhập trạng thái bài viết.',
+    });
+}
+

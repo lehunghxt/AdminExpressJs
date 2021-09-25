@@ -81,7 +81,20 @@
                                     <div class="invalid-feedback">{{ validateErr dataErr 'userType' }}</div>
                                 </div>
                             </div>
+                            <div class="col-xs-12 col-sm-12 col-md-6">
+                                <div class="form-group">
+                                    <label class="text-success" for="status">Trạng thái tài khoản</label><br>
+                                    <input name="status" id="status" type="checkbox" {{ compareString '1' user.status 'checked' }} 
+                                        data-toggle="toggle" 
+                                        data-onstyle="outline-success" 
+                                        data-offstyle="outline-danger" 
+                                        data-size="sm" 
+                                        data-on="Hoạt động" 
+                                        data-off="Khóa">
+                                </div>
+                            </div>
                         </div>
+                        <hr>
                         <input type="hidden" name="csrf" value="{{token}}">
                         <input type="hidden" name="_id" value="{{ user._id }}">
                         <input type="submit" value="cập nhập" class="btn btn-success btn-sm">

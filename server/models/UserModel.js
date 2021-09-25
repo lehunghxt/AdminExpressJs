@@ -1,24 +1,61 @@
 const { Users, Posts } = require("../models/init");
 const bcrypt = require("bcrypt");
 //#region LIST
-  module.exports.list = async (page, perPage, currentUserId = null) => {
-    return new Promise((res, rej) => {
-      Users.find({ _id: {$ne: currentUserId}})
-        .populate('posts')
-        .populate('userType')
-        .skip(perPage * page - perPage)
-        .limit(perPage)
-        .lean()
-        .exec(function (error, users) {
-          Users.countDocuments((err, count) => {
-            if (err) rej(err);
-            res({
-              users,
-              current: page, // page hiện tại
-              pages: Math.ceil(count / perPage), // tổng số các page
+  module.exports.list = async (page, perPage, currentUserId = null, dataSearch) => {
+      console.log(dataSearch);
+    return new Promise(async(res, rej) => {
+        const query = Users.find({ _id: {$ne: currentUserId}});
+        if(dataSearch.name && dataSearch.name != ''){
+            query.where('name').equals(dataSearch.name);
+        }
+        if(dataSearch.userType && dataSearch.userType != ''){
+            query.where('userType').equals(dataSearch.userType);
+        }
+        if(dataSearch.status && dataSearch.status != ''){
+            query.where('status').equals(dataSearch.status);
+        }
+        query.populate('posts').populate('userType').skip(perPage * page - perPage).limit(perPage).lean()
+        query.exec(function (error, users) {
+            const queryCount = Users.find({ _id: {$ne: currentUserId}});
+            if(dataSearch.name && dataSearch.name != ''){
+                queryCount.where('name').equals(dataSearch.name);
+            }
+            if(dataSearch.userType && dataSearch.userType != ''){
+                queryCount.where('userType').equals(dataSearch.userType);
+            }
+            if(dataSearch.status && dataSearch.status != ''){
+                queryCount.where('status').equals(dataSearch.status);
+            }
+            queryCount.countDocuments((err, count) => {
+                if (err) rej(err);
+                res({
+                    users,
+                    current: page, // page hiện tại
+                    pages: Math.ceil(count / perPage), // tổng số các page
+                });
             });
-          });
         });
+
+
+
+    //   Users.find({ _id: {$ne: currentUserId}})
+    //     .select("-password")
+    //     .populate('posts')
+    //     .populate('userType')
+    //     .skip(perPage * page - perPage)
+    //     .limit(perPage)
+    //     .lean()
+    //     .exec(function (error, users) {
+    //       Users.countDocuments((err, count) => {
+    //         if (err) rej(err);
+    //         res({
+    //           users,
+    //           current: page, // page hiện tại
+    //           pages: Math.ceil(count / perPage), // tổng số các page
+    //         });
+    //       });
+    //     });
+
     });
   };
 //#endregion
@@ -35,6 +72,7 @@ module.exports.add = async (data) => {
       phone: data.phone,
       gender: data.gender,
       userType: data.userType,
+      status : data.status ? 1 : 2,
     });
     newUser
       .save()
@@ -64,14 +102,15 @@ module.exports.update = async (data, id) => {
   return new Promise(async (res, rej) => {
     var salt = await bcrypt.genSalt(10);
     const updateuser = {
-      name: data.name,
-      email: data.email,
-      username: data.username,
-      //password: await bcrypt.hash(data.password, salt),
-      address: data.address,
-      phone: data.phone,
-      gender: data.gender,
-      userType: data.userType,
+        name: data.name,
+        email: data.email,
+        username: data.username,
+        //password: await bcrypt.hash(data.password, salt),
+        address: data.address,
+        phone: data.phone,
+        gender: data.gender,
+        userType: data.userType,
+        status : data.status ? 1 : 2,
     };
     if (data.password)
       updateuser.password = await bcrypt.hash(data.password, salt);
@@ -81,7 +120,6 @@ module.exports.update = async (data, id) => {
     });
   });
 };
-
 module.exports.delete = async (id) => {
   return new Promise((res, rej) => {
     Users.findByIdAndRemove({ _id: id }, function (err, docs) {
@@ -126,8 +164,6 @@ module.exports.login = async (username, password) => {
       })
   });
 };
-
-
 module.exports.gen = async () => {
   const TYPE_ADMIN = 1;
   return new Promise(async (res, rej) => {
@@ -165,3 +201,32 @@ module.exports.findByUsername = async (username) => {
         })
     });
   };
+  module.exports.addStatus = async () => {
+    return new Promise(async (res, rej) => {
+        const allUser = await Users.find({});
+        console.log(allUser);
+        // allUser.forEach(async user => {
+        //     console.log(user._id);
+        //     const status = {
+        //         status : 1,
+        //     }
+        //     await Users.findByIdAndUpdate({_id:user._id}, status);
+        // })
+    });
+  };
+  module.exports.ajaxChangeStatus = async (id) => {
+    return new Promise( async (res, rej) => {
+        const user = await Users.findOne({_id : id});
+        if(user == null) res(null);
+        else{
+            const currentStatus = user.status;
+            await Users.findByIdAndUpdate({_id : id}, {
+                status : currentStatus == 1 ? 2 : 1,
+            }).then(data => res(data)).catch(err => {
+                console.log(err);
+                res(null);
+            })
+        }
+    })
+  }
+  

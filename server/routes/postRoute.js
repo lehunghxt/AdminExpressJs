@@ -15,4 +15,6 @@ postRoute.post('/delete-all', [PostMiddleware.Xoabaiviet, checkCsrfToken], PostC
 postRoute.get('/ajaxPost/:id', PostController.ajaxPost);
 postRoute.get('/', PostMiddleware.Xemdanhsachbaiviet, PostController.view);
 
+postRoute.post('/ajaxChangeStatus', checkCsrfToken, PostController.ajaxChangeStatus);
+
 module.exports = postRoute;

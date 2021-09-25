@@ -7,8 +7,15 @@ module.exports.isLogged = (req, res, next) => {
         res.render('auth/login', {
             layout : false,
             token: req.session.csrf,
-            message: req.originalUrl == '/' ? '' : 'vui lòng đăng nhập để tiếp tục',
-          });
+            message: req.originalUrl == '/' ? '' : 'Vui lòng đăng nhập để tiếp tục',
+        });
+    }
+    else if(req.session.CurrentUser && req.session.CurrentUser.status == 2){
+        res.render('auth/login', {
+            layout : false,
+            token: req.session.csrf,
+            message: 'Tài khoản của bạn tạm thời bị khóa !',
+        });
     }else{
         next();
     }
