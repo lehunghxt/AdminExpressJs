@@ -5,7 +5,7 @@ const { Users } = require("../models/init");
 
 exports.view = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
-  var perPage = 6;
+  var perPage = 12;
   const currentUserId = req.session.CurrentUser._id;
   const dataSearch = req.query;
   const listuser = await UserModel.list(page, perPage, currentUserId, dataSearch);

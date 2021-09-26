@@ -19,24 +19,57 @@ module.exports.addpost = async (data) => {
   });
 };
 
-module.exports.listpost = async (page, perPage, CurrentUser) => {
-  return new Promise((res, rej) => {
-    Posts.find({ author: CurrentUser._id })
-      .populate("author")
-      .skip(perPage * page - perPage)
-      .limit(perPage)
-      .lean()
-      .exec(function (error, posts) {
-        Posts.countDocuments({ author: CurrentUser._id }, (err, count) => {
-          if (err) rej(err);
-          res({
-            posts,
-            current: page, // page hiện tại
-            pages: Math.ceil(count / perPage), // tổng số các page
-          });
+module.exports.listpost = async (page, perPage, CurrentUser, dataSearch) => {
+    return new Promise((res, rej) => {
+        const query = Posts.find({})
+        if(CurrentUser.userType.TypeCode != 1){
+            query.where('author').equals(CurrentUser._id)
+        }
+        if(dataSearch.titlePost && dataSearch.titlePost != ''){
+            query.where('title').equals(dataSearch.titlePost)
+        }
+        if(dataSearch.statusPost && dataSearch.statusPost != ''){
+            query.where('status').equals(dataSearch.statusPost)
+        }
+        query.populate("author").skip(perPage * page - perPage).limit(perPage).lean()
+        .exec(function (error, posts) {
+            const queryCountPost = Posts.find({})
+            if(CurrentUser.userType.TypeCode != 1){
+                query.where('author').equals(CurrentUser._id)
+            }
+            if(dataSearch.titlePost && dataSearch.titlePost != ''){
+                queryCountPost.where('title').equals(dataSearch.titlePost)
+            }
+            if(dataSearch.statusPost && dataSearch.statusPost != ''){
+                queryCountPost.where('status').equals(dataSearch.statusPost)
+            }
+            queryCountPost.countDocuments({ author: CurrentUser._id }, (err, count) => {
+                if (err) rej(err);
+                res({
+                    posts,
+                    current: page, // page hiện tại
+                    pages: Math.ceil(count / perPage), // tổng số các page
+                });
+            });
         });
-      });
-  });
+
+
+        // Posts.find({ author: CurrentUser._id })
+        // .populate("author")
+        // .skip(perPage * page - perPage)
+        // .limit(perPage)
+        // .lean()
+        // .exec(function (error, posts) {
+        //     Posts.countDocuments({ author: CurrentUser._id }, (err, count) => {
+        //         if (err) rej(err);
+        //         res({
+        //             posts,
+        //             current: page, // page hiện tại
+        //             pages: Math.ceil(count / perPage), // tổng số các page
+        //         });
+        //         });
+        // });
+    });
 };
 
 module.exports.findOnePost = async (id) => {

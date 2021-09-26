@@ -2,7 +2,6 @@ const { Users, Posts } = require("../models/init");
 const bcrypt = require("bcrypt");
 //#region LIST
   module.exports.list = async (page, perPage, currentUserId = null, dataSearch) => {
-      console.log(dataSearch);
     return new Promise(async(res, rej) => {
         const query = Users.find({ _id: {$ne: currentUserId}});
         if(dataSearch.name && dataSearch.name != ''){

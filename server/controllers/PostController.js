@@ -3,8 +3,9 @@ const { validationResult } = require("express-validator");
 const { Posts } = require("../models/init");
 exports.view = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
-  var perPage = 20;
-  const listpost = await PostModel.listpost(page, perPage, CurrentUser);
+  var perPage = 5;
+  const dataSearch = req.query;
+  const listpost = await PostModel.listpost(page, perPage, CurrentUser, dataSearch);
   if (page > listpost.pages) return res.redirect("post");
   const existData = listpost.posts.length > 0 ? true : false;
   const message = req.flash("message")[0];
@@ -16,6 +17,8 @@ exports.view = async (req, res) => {
     message: message,
     token: req.session.csrf,
     title: "Quản lý bài viết",
+    dataSearch,
+    url : req.originalUrl,
   });
 };
 exports.add = (req, res) => {
