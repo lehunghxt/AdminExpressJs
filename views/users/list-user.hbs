@@ -1,6 +1,7 @@
 <script>
     $('#liUser').addClass('active');
 </script>
+
 <h4>Danh sách thành viên</h4>
 <div class="card shadow mb-4">
     <div class="card-body">
@@ -50,16 +51,6 @@
 </div>
 <div class="card shadow mb-4">
 	<div class="card-body">
-		{{#if message}}
-		<div class="row">
-			<div class="col-md-12">
-				<div class="alert alert-success col-md-12">
-					<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-					{{message}}
-				</div>
-			</div>
-		</div>
-		{{/if}}
 		<div class="row">
 			<div class="col-sm-12 overflow-auto">
 				<table class="table table-bordered table-sm table-hover" style="font-size: 13px; min-width: 800px;">
@@ -189,7 +180,6 @@
 
 <script>
     $(document).ready(function() {
-        //loadTableUser();
     })
 	function handleDelete(id) {
 		$('#userid').val(id);

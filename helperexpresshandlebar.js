@@ -55,5 +55,4 @@ module.exports.showTitle = (title) => {
     })
     return finded ? output : '';
   }
-  
 

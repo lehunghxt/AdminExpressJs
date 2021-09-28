@@ -34,27 +34,6 @@ const bcrypt = require("bcrypt");
                 });
             });
         });
-
-
-
-    //   Users.find({ _id: {$ne: currentUserId}})
-    //     .select("-password")
-    //     .populate('posts')
-    //     .populate('userType')
-    //     .skip(perPage * page - perPage)
-    //     .limit(perPage)
-    //     .lean()
-    //     .exec(function (error, users) {
-    //       Users.countDocuments((err, count) => {
-    //         if (err) rej(err);
-    //         res({
-    //           users,
-    //           current: page, // page hiện tại
-    //           pages: Math.ceil(count / perPage), // tổng số các page
-    //         });
-    //       });
-    //     });
-
     });
   };
 //#endregion
@@ -142,7 +121,6 @@ module.exports.deleteMul = async (ids) => {
     });
   });
 };
-
 module.exports.login = async (username, password) => {
   return new Promise((res, rej) => {
       Users.findOne({ username: username })
@@ -183,7 +161,6 @@ module.exports.gen = async () => {
     res(true);
   });
 };
-
 module.exports.findByUsername = async (username) => {
     return new Promise(async (res, rej) => {
         await Users.findOne({username : username}).then(data => res(data)).catch(err => {
@@ -191,7 +168,7 @@ module.exports.findByUsername = async (username) => {
             res(null);
         })
     });
-  };
+};
   module.exports.findByEmail = async (email) => {
     return new Promise(async (res, rej) => {
         await Users.findOne({email : email}).then(data => res(data)).catch(err => {
@@ -199,20 +176,7 @@ module.exports.findByUsername = async (username) => {
             res(null);
         })
     });
-  };
-  module.exports.addStatus = async () => {
-    return new Promise(async (res, rej) => {
-        const allUser = await Users.find({});
-        console.log(allUser);
-        // allUser.forEach(async user => {
-        //     console.log(user._id);
-        //     const status = {
-        //         status : 1,
-        //     }
-        //     await Users.findByIdAndUpdate({_id:user._id}, status);
-        // })
-    });
-  };
+};
   module.exports.ajaxChangeStatus = async (id) => {
     return new Promise( async (res, rej) => {
         const user = await Users.findOne({_id : id});
@@ -227,5 +191,25 @@ module.exports.findByUsername = async (username) => {
             })
         }
     })
-  }
+}
+
+module.exports.updateProfile = async (data, userId) => {
+    return new Promise(async(res, rej) => {
+    const info = {
+        name: data.name,
+        email: data.email,
+        username: data.username,
+        address: data.address,
+        phone: data.phone,
+        gender: data.gender,
+    };
+    if(data.image != '') info.image = data.image;
+    await Users.findByIdAndUpdate({_id : userId}, info)
+        .then(data => res(data))
+        .catch(err => {
+            console.log(err);
+            rej(null);
+        });
+    })
+}
   

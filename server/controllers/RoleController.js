@@ -26,7 +26,7 @@ exports.store = async (req, res) => {
 
   const data = req.body;
   const dataAdd = await RoleModel.addRole(data);
-  //req.flash("message", `Đã thêm quyền: ${dataAdd.roleName} !`);
+  //req.flash("message_success", `Đã thêm quyền: ${dataAdd.roleName} !`);
   res.redirect("/role");
 };
 exports.update = async (req, res) => {

@@ -32,7 +32,7 @@ module.exports.listpost = async (page, perPage, CurrentUser, dataSearch) => {
             query.where('status').equals(dataSearch.statusPost)
         }
         query.populate("author").skip(perPage * page - perPage).limit(perPage).lean()
-        .exec(function (error, posts) {
+        query.exec(function (error, posts) {
             const queryCountPost = Posts.find({})
             if(CurrentUser.userType.TypeCode != 1){
                 query.where('author').equals(CurrentUser._id)

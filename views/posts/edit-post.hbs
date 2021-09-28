@@ -10,7 +10,7 @@
                 <form class="col-md-12" action="/post/edit/{{post._id}}" method="POST">
                     <div class="form-group">
                         {{#if UserCan.Suabaiviet}}
-                        <input type="submit" value="Cập nhập" class="btn btn-success btn-sm">
+                            <input type="submit" value="Cập nhập" class="btn btn-success btn-sm">
                         {{/if}}
                         <a href="/post" class="btn btn-danger btn-sm">Quay lại</a>
                         <input type="hidden" name="csrf" value="{{token}}">

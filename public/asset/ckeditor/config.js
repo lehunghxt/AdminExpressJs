@@ -9,6 +9,7 @@ CKEDITOR.editorConfig = function( config ) {
     config.width = "auto";
     config.height = "50vh";
     config.toolbarGroupCycling = false;
+    config.removePlugins = exportpdf;
 
 	// Define changes to default configuration here. For example:
 	// config.language = 'fr';

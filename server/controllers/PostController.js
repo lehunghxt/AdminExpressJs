@@ -6,15 +6,17 @@ exports.view = async (req, res) => {
   var perPage = 5;
   const dataSearch = req.query;
   const listpost = await PostModel.listpost(page, perPage, CurrentUser, dataSearch);
-  if (page > listpost.pages) return res.redirect("post");
+  //if (page > listpost.pages) return res.redirect("post");
   const existData = listpost.posts.length > 0 ? true : false;
-  const message = req.flash("message")[0];
+  const message_success = req.flash("message_success")[0];
+  const message_error = req.flash("message_error")[0];
   res.render("posts/list-post", {
     listpost: listpost.posts,
     currentPage: listpost.current,
     pages: listpost.pages,
     existData: existData,
-    message: message,
+    message_success,
+    message_error,
     token: req.session.csrf,
     title: "Quản lý bài viết",
     dataSearch,
@@ -42,7 +44,7 @@ exports.store = async (req, res) => {
   const data = req.body;
   data.CurrentUser = req.session.CurrentUser;
   const dataAdded = await PostModel.addpost(data);
-  req.flash("message", `đã thêm bài viết: ${dataAdded.name} !`);
+  req.flash("message_success", `Đã thêm bài viết: ${dataAdded.name} !`);
   res.redirect("/post");
 };
 
@@ -77,24 +79,21 @@ exports.update = async (req, res) => {
 };
 
 exports.delete = async (req, res) => {
-  const { delPostId } = req.body;
-  const dataDelete = await PostModel.deletepost(delPostId);
-  var message;
-  if (!dataDelete) message = `Xóa bài viết không thành công !`;
-  else message = `Đã xóa thành công bài viết: ${dataDelete.title} !`;
-  req.flash("message", message);
-  res.redirect("/post");
+    const { delPostId } = req.body;
+    const dataDelete = await PostModel.deletepost(delPostId);
+    var message;
+    if (!dataDelete) req.flash("message_error", 'Xóa bài viết không thành công !');
+    else req.flash("message_succes", `Đã xóa thành công bài viết: ${dataDelete.title} !`);
+    res.redirect("/post");
 };
 
 exports.deleteAll = async (req, res) => {
-  const { postid } = req.body;
-  const count = await PostModel.deletemulpost(postid);
-  var message;
-  if (!count || count.deletedCount == 0)
-    message = `Xóa bài viết không thành công !`;
-  else message = `Đã xóa thành công ${count.deletedCount} bài viết !`;
-  req.flash("message", message);
-  res.redirect("/post");
+    const { postid } = req.body;
+    const count = await PostModel.deletemulpost(postid);
+    if (!count || count.deletedCount == 0)
+        req.flash("message_error", `Xóa bài viết không thành công !`);
+    else req.flash("message_success ", `Đã xóa thành công ${count.deletedCount} bài viết !`);
+    res.redirect("/post");
 };
 
 exports.gen = async (req, res) => {
@@ -115,5 +114,9 @@ exports.ajaxChangeStatus = async (req, res) => {
         status : post == null ? 0 : post.status,
         message : post == null ? 'Không cập nhập được trạng thái bài viết.' : 'Đã cập nhập trạng thái bài viết.',
     });
+    if(post == null)
+        res.status(200).json({status : 0, message_error : 'Không cập nhập được trạng thái bài viết.'});
+    else
+        res.status(200).json({status : post.status, message_success :'Đã cập nhập trạng thái bài viết.' });
 }
 

@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 //mongodb://localhost:27017/manageruser
 mongoose
-  .connect(process.env.MONGODB_CONNECT, {
+  .connect(process.env.MONGODB_CONNECT_LOCAL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
@@ -19,6 +19,7 @@ const UserModel = new Schema({
     userType: { type: Schema.Types.ObjectId, ref: 'UserTypes' },
     posts : [ { type: Schema.Types.ObjectId, ref: 'Posts' } ],
     status: Number,
+    image: String,
 });
 const PostModel = new Schema({
     title: String,

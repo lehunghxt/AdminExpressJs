@@ -1,0 +1,111 @@
+<div class="d-flex justify-content-center">
+    <div class="card shadow mb-4 col-xs-12 col-sm-12 col-md-10">
+        <div class="card-body">
+            <form action="/profile" method="POST" enctype="multipart/form-data">
+                <div class="row">
+                    <div class="col-md-3 border-right">
+                        <div class="row">
+                            <div class="col-md-12">
+                                {{#if info.image }}
+                                    <img class="border border-success rounded-circle w-100" id="profileImg" src="../uploads/{{ info._id }}/{{ info.image }}" style="object-fit: cover;">
+                                {{else}}
+                                    <img class="border border-success rounded-circle w-100" id="profileImg" src="../uploads/user.png" style="object-fit: cover;">
+                                {{/if}}
+                            </div>
+                            <div class="col-md-12 d-flex flex-column text-center mt-5">
+                                <input id="image" accept="image/*" name="image" type="file" style="display: none;" onchange="loadFile(event);">
+                                <button type="button" class="btn btn-sm btn-success mb-3" onclick="$('#image').click();">
+                                    Choose Image
+                                </button>
+                                <span class="font-weight-bold">{{ info.name }}</span>
+                                <span class="text-black-50">{{ info.email }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="p-3 py-5">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div class="d-flex flex-row align-items-center back">
+                                    <i class="fa fa-long-arrow-left mr-1 mb-1"></i>
+                                    <a class="btn btn-sm btn-success" href="/">Quay về trang chủ</a>
+                                </div>
+                                <h6 class="text-right">Edit Profile</h6>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12 col-md-6">
+                                    <div class="form-group">
+                                        <label class="text-success">Tên thành viên</label>
+                                        <input type="text" class="form-control form-control-sm {{ validateErrClass dataErr 'name' 'is-invalid' }}" id="name" name="name"
+                                            placeholder="Tên thành viên" value="{{ info.name }}">
+                                            <div class="invalid-feedback">{{ validateErr dataErr 'name' }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-6">
+                                    <div class="form-group">
+                                        <label class="text-success">Email</label>
+                                        <input type="email" class="form-control form-control-sm {{ validateErrClass dataErr 'email' 'is-invalid' }}" id="email" name="email" placeholder="Email"
+                                            value="{{ info.email }}">
+                                            <div class="invalid-feedback">{{ validateErr dataErr 'email' }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-6">
+                                    <div class="form-group">
+                                        <label class="text-success">Tên đăng nhập</label>
+                                        <input type="text" class="form-control form-control-sm {{ validateErrClass dataErr 'username' 'is-invalid' }}" id="username" name="username"
+                                            placeholder="Tên đăng nhập" value="{{ info.username }}">
+                                            <div class="invalid-feedback">{{ validateErr dataErr 'username' }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-6">
+                                    <div class="form-group">
+                                        <label class="text-success">Địa chỉ</label>
+                                        <input type="text" class="form-control form-control-sm {{ validateErrClass dataErr 'address' 'is-invalid' }}" id="address" name="address"
+                                            placeholder="Địa chỉ" value="{{ info.address }}">
+                                            <div class="invalid-feedback">{{ validateErr dataErr 'address' }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-6">
+                                    <div class="form-group">
+                                        <label class="text-success">Số điện thoại</label>
+                                        <input type="text" class="form-control form-control-sm {{ validateErrClass dataErr 'phone' 'is-invalid' }}" id="phone" name="phone"
+                                            placeholder="số điện thoại" value="{{ info.phone }}">
+                                            <div class="invalid-feedback">{{ validateErr dataErr 'phone' }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-6">
+                                    <div class="form-group">
+                                        <label class="text-success" for="gender">Giới tính</label>
+                                        <select name="gender" id="gender" class="form-control form-control-sm {{ validateErrClass dataErr 'gender' 'is-invalid' }}">
+                                            <option value="male" {{ compareString 'male' info.gender 'selected' }}>Nam</option>
+                                            <option value="female" {{ compareString 'female' info.gender 'selected' }}>Nữ
+                                            </option>
+                                        </select>
+                                        <div class="invalid-feedback">{{ validateErr dataErr 'gender' }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-5 text-right">
+                                <input type="hidden" name="csrf" value="{{ token }}">
+                                <button class="btn btn-primary btn-sm" type="submit">Save Profile</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    $( window ).resize(function() {
+        $('#profileImg').height($('#profileImg').width());
+    });
+    $('#profileImg').height($('#profileImg').width());
+    var loadFile = function(event) {
+        var reader = new FileReader();
+        reader.onload = function(){
+        var output = document.getElementById('profileImg');
+        output.src = reader.result;
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    };
+</script>

@@ -24,8 +24,8 @@ const option = {
 }
 global.__basedir = path.join(__dirname, 'public');
 app.use(express.static(path.join(__dirname, 'public'), option));
-app.use(express.json({ limit: "100mb" }));
 app.use(express.urlencoded({ limit: "100mb", extended: true }));
+app.use(express.json({ limit: "100mb" }));
 //OVERRIDE METHOD
 app.use(methodOverride(function (req, res) {
     if (req.body && typeof req.body === 'object' && '_method' in req.body) {
@@ -63,10 +63,12 @@ hbs.handlebars.registerHelper("showTitle", helper.showTitle);
 hbs.handlebars.registerHelper("validateErr", helper.validateErr);
 hbs.handlebars.registerHelper("validateErrClass", helper.validateErrClass);
 
+
 app.use(async function (req, res, next) {
     if (req.session.csrf === undefined) {
         req.session.csrf = randomBytes(100).toString("base64");
     }
+    app.locals.token = req.session.csrf;
     if (req.session.CurrentUser) {
         const id = req.session.CurrentUser._id;
         const dataCurrentUser = await CurrentUser(id);
