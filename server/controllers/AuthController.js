@@ -66,7 +66,7 @@ exports.updateProfile = async (req, res) => {
     const oldImg = req.session.CurrentUser.image;
     if(info){
         const dir = `./public/uploads/${userId}/${oldImg}`;
-        if(req.file)
+        if(req.file && fs.existsSync(dir))
             fs.unlinkSync(dir);
         req.flash("message_success", `Cập nhập thành công !`);
         res.redirect('/profile')
