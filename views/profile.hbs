@@ -7,14 +7,17 @@
                         <div class="row">
                             <div class="col-md-12">
                                 {{#if info.image }}
-                                    <img class="border border-success rounded-circle w-100" id="profileImg" src="../uploads/{{ info._id }}/{{ info.image }}" style="object-fit: cover;">
+                                    <img class="border border-success rounded-circle w-100" 
+                                    id="profileImg" src="{{__basedir}}/uploads/{{ info._id }}/{{ info.image }}" 
+                                    onerror="this.onerror=null; this.src='{{__basedir}}/img/no-image.png'" 
+                                    style="object-fit: cover;">
                                 {{else}}
-                                    <img class="border border-success rounded-circle w-100" id="profileImg" src="../uploads/user.png" style="object-fit: cover;">
+                                    <img class="border border-success rounded-circle w-100" id="profileImg" src="{{__basedir}}/uploads/user.png" style="object-fit: cover;">
                                 {{/if}}
                             </div>
                             <div class="col-md-12 d-flex flex-column text-center mt-5">
                                 <input id="image" accept="image/*" name="image" type="file" style="display: none;" onchange="loadFile(event);">
-                                <button type="button" class="btn btn-sm btn-success mb-3" onclick="$('#image').click();">
+                                <button type="button" class="btn btn-sm btn-success mb-3" onclick="$('#image').click();">   
                                     Choose Image
                                 </button>
                                 <span class="font-weight-bold">{{ info.name }}</span>

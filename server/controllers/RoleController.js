@@ -10,49 +10,61 @@ exports.view = async (req, res) => {
   });
 };
 exports.store = async (req, res) => {
-    const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    const listRole = await RoleModel.getAll();
-    const dataErr = errors.array();
-    res.render("roles/list-role",{
-        title : 'Quản lý quyền',
-        token: req.session.csrf,
-        dataErr,
-        listRole,
-        role : req.body,
-    });
-    return;
-  }
-
-  const data = req.body;
-  const dataAdd = await RoleModel.addRole(data);
-  //req.flash("message_success", `Đã thêm quyền: ${dataAdd.roleName} !`);
-  res.redirect("/role");
+    try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            const listRole = await RoleModel.getAll();
+            const dataErr = errors.array();
+            res.render("roles/list-role",{
+                title : 'Quản lý quyền',
+                token: req.session.csrf,
+                dataErr,
+                listRole,
+                role : req.body,
+            });
+            return;
+        }
+        const data = req.body;
+        const dataAdd = await RoleModel.addRole(data);
+        //req.flash("message_success", `Đã thêm quyền: ${dataAdd.roleName} !`);
+        res.redirect("/role");
+    } catch (error) {
+        console.log(error);
+    }
+    
 };
 exports.update = async (req, res) => {
-    const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    const listRole = await RoleModel.getAll();
-    const dataErr = errors.array();
-    res.render("roles/list-role",{
-        title : 'Quản lý quyền',
-        token: req.session.csrf,
-        dataErr,
-        listRole,
-        roleEdit : req.body,
-        showModal : true,
-    });
-    return;
-  }
-
-  const data = req.body;
-  const dataEdit = await RoleModel.updateRole(data);
-  //req.flash("message", `Đã cập nhập quyền: ${dataEdit.roleName} !`);
-  res.redirect("/role");
+    try {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            const listRole = await RoleModel.getAll();
+            const dataErr = errors.array();
+            res.render("roles/list-role",{
+                title : 'Quản lý quyền',
+                token: req.session.csrf,
+                dataErr,
+                listRole,
+                roleEdit : req.body,
+                showModal : true,
+            });
+            return;
+        }
+        const data = req.body;
+        const dataEdit = await RoleModel.updateRole(data);
+        //req.flash("message", `Đã cập nhập quyền: ${dataEdit.roleName} !`);
+        res.redirect("/role");
+    } catch (error) {
+        console.log(error);
+    }
+    
 };
 exports.delete = async (req, res) => {
-  const data = req.body;
-  const dataDelete = await RoleModel.deleteRole(data);
-  //req.flash("message", `Đã cập nhập quyền: ${dataDelete.roleName} !`);
-  res.redirect("/role");
+    try {
+        const data = req.body;
+        const dataDelete = await RoleModel.deleteRole(data);
+        //req.flash("message", `Đã cập nhập quyền: ${dataDelete.roleName} !`);
+        res.redirect("/role");
+    } catch (error) {
+        console.log(error);
+    }
 };

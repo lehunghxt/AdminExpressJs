@@ -1,9 +1,8 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 //mongodb://localhost:27017/manageruser
-//MONGODB_CONNECT_LOCAL
 mongoose
-  .connect(process.env.MONGODB_CONNECT, {
+  .connect( process.env.MONGODB_CONNECT, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
